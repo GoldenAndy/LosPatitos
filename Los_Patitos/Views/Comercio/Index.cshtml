@@ -1,0 +1,70 @@
+﻿@model List<Los_Patitos.Models.Comercio>
+
+@{
+    ViewData["Title"] = "Comercios";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success">@TempData["Ok"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<p>
+    <a asp-action="Crear" class="btn btn-primary">Nuevo comercio</a>
+</p>
+
+@if (Model == null || Model.Count == 0)
+{
+    <div class="alert alert-info">No hay comercios registrados.</div>
+}
+else
+{
+    <table class="table table-striped table-bordered align-middle">
+        <thead>
+            <tr>
+                <th>Identificación</th>
+                <th>Tipo de identificación</th>
+                <th>Nombre</th>
+                <th>Tipo de comercio</th>
+                <th>Teléfono</th>
+                <th>Correo electrónico</th>
+                <th>Estado</th>
+                <th style="width:240px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>@c.Identificacion</td>
+                    <td>
+                        @(c.TipoIdentificacion == 1 ? "Física"
+                                        : c.TipoIdentificacion == 2 ? "Jurídica"
+                                        : "Desconocido")
+                                                    </td>
+                                                    <td>@c.Nombre</td>
+                                                    <td>
+                        @(c.TipoComercio == 1 ? "Restaurantes"
+                                        : c.TipoComercio == 2 ? "Supermercados"
+                                        : c.TipoComercio == 3 ? "Ferreterías"
+                                        : c.TipoComercio == 4 ? "Otros"
+                                        : "Desconocido")
+            </td>
+            <td>@c.Telefono</td>
+            <td>@c.CorreoElectronico</td>
+            <td>@(c.Estado ? "Activo" : "Inactivo")</td>
+            <td class="text-nowrap">
+                <a asp-action="Editar" asp-route-id="@c.IdComercio" class="btn btn-sm btn-warning me-1">Editar</a>
+                <a asp-action="Detalles" asp-route-id="@c.IdComercio" class="btn btn-sm btn-info me-1">Detalles</a>
+            </td>
+        </tr>
+                }
+        </tbody>
+    </table>
+}

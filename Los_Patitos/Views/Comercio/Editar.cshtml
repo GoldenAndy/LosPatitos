@@ -1,0 +1,78 @@
+﻿@model Los_Patitos.Models.Comercio
+@{
+    ViewData["Title"] = "Editar comercio";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<form asp-action="Editar" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="IdComercio" />
+
+    <div class="mb-3">
+        <label class="form-label">Identificación</label>
+        <input asp-for="Identificacion" class="form-control" readonly />
+        <span asp-validation-for="Identificacion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tipo de identificación</label>
+        <select asp-for="TipoIdentificacion"
+                asp-items="ViewBag.TiposIdentificacion"
+                class="form-select"
+                disabled></select>
+        <input type="hidden" asp-for="TipoIdentificacion" />
+        <span asp-validation-for="TipoIdentificacion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Nombre</label>
+        <input asp-for="Nombre" class="form-control" />
+        <span asp-validation-for="Nombre" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Tipo de comercio</label>
+        <select asp-for="TipoComercio" asp-items="ViewBag.TiposComercio" class="form-select"></select>
+        <span asp-validation-for="TipoComercio" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Teléfono</label>
+        <input asp-for="Telefono"
+               class="form-control"
+               type="tel"
+               inputmode="numeric"
+               pattern="\d{8}"
+               maxlength="8"
+               title="Debe tener exactamente 8 dígitos" />
+        <span asp-validation-for="Telefono" class="text-danger"></span>
+    </div>
+
+
+    <div class="mb-3">
+        <label class="form-label">Correo electrónico</label>
+        <input asp-for="CorreoElectronico" class="form-control" />
+        <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Dirección</label>
+        <textarea asp-for="Direccion" class="form-control" rows="3"></textarea>
+        <span asp-validation-for="Direccion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Estado</label>
+        <select asp-for="Estado" asp-items="ViewBag.Estados" class="form-select"></select>
+        <span asp-validation-for="Estado" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar cambios</button>
+    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
