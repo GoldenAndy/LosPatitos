@@ -10,6 +10,7 @@ namespace Los_Patitos.Data
         public DbSet<Comercio> Comercios { get; set; }
         public DbSet<TipoIdentificacion> TiposIdentificacion { get; set; }
         public DbSet<TipoComercio> TiposComercio { get; set; }
+        public DbSet<CajaModel> Caja_G4 { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -35,6 +36,26 @@ namespace Los_Patitos.Data
                 e.HasKey(x => x.Id);
                 e.Property(x => x.Nombre).HasMaxLength(50);
             });
+
+
+
+            modelBuilder.Entity<CajaModel>()
+                .HasKey(c => c.IdCaja);
+
+            modelBuilder.Entity<CajaModel>()
+                .HasOne(c => c.Comercio)
+                .WithMany()
+                .HasForeignKey(c => c.IdComercio);
+
+            modelBuilder.Entity<CajaModel>()
+                .HasIndex(c => new { c.IdComercio, c.Nombre })
+                .IsUnique(); // no puede haber dos cajas con el mismo nombre en el mismo comercio
+
+            modelBuilder.Entity<CajaModel>()
+                .HasIndex(c => c.TelefonoSINPE)
+                .IsUnique(); // no puede haber dos cajas activas con el mismo teléfono
+
+            base.OnModelCreating(modelBuilder);
         }
     }
 }

@@ -20,6 +20,7 @@ builder.Services.AddScoped<ITipoIdentificacionRepository, TipoIdentificacionRepo
 builder.Services.AddScoped<ITipoComercioRepository, TipoComercioRepository>();
 builder.Services.AddScoped<ITipoIdentificacionService, TipoIdentificacionService>();
 builder.Services.AddScoped<ITipoComercioService, TipoComercioService>();
+builder.Services.AddScoped<ICajaService, CajaService>();
 
 
 var app = builder.Build();

@@ -62,6 +62,12 @@ else
             <td class="text-nowrap">
                 <a asp-action="Editar" asp-route-id="@c.IdComercio" class="btn btn-sm btn-warning me-1">Editar</a>
                 <a asp-action="Detalles" asp-route-id="@c.IdComercio" class="btn btn-sm btn-info me-1">Detalles</a>
+
+                <!-- Nuevo botón -->
+                <a asp-controller="Caja" asp-action="Index" asp-route-idComercio="@c.IdComercio"
+                   class="btn btn-sm btn-success">
+                    Ver cajas
+                </a>
             </td>
         </tr>
                 }

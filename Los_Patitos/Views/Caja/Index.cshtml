@@ -1,0 +1,44 @@
+﻿@model IEnumerable<Los_Patitos.Models.CajaModel>
+@{
+    ViewData["Title"] = "Cajas del Comercio";
+    int idComercio = ViewBag.IdComercio;
+    string nombreComercio = ViewBag.NombreComercio ?? "Comercio";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h4 class="text-muted mb-3">@nombreComercio</h4>
+
+<p>
+    <a asp-action="Crear" asp-route-idComercio="@idComercio" class="btn btn-primary">Crear Nueva Caja</a>
+    <a asp-controller="Comercio" asp-action="Index" class="btn btn-secondary">Volver a Comercios</a>
+</p>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Descripción</th>
+            <th>Teléfono SINPE</th>
+            <th>Fecha de Registro</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.Nombre</td>
+                <td>@(c.Descripcion.Length > 10 ? c.Descripcion.Substring(0, 10) + "..." : c.Descripcion)</td>
+                <td>@c.TelefonoSINPE</td>
+                <td>@c.FechaDeRegistro.ToString("dd/MM/yyyy")</td>
+                <td>@(c.Estado ? "Activo" : "Inactivo")</td>
+                <td>
+                    <a asp-action="Editar" asp-route-id="@c.IdCaja" class="btn btn-sm btn-warning">Editar</a>
+                    <a asp-action="VerSinpe" asp-route-idCaja="@c.IdCaja" class="btn btn-sm btn-info">Ver SINPE</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
