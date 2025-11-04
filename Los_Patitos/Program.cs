@@ -21,6 +21,9 @@ builder.Services.AddScoped<ITipoComercioRepository, TipoComercioRepository>();
 builder.Services.AddScoped<ITipoIdentificacionService, TipoIdentificacionService>();
 builder.Services.AddScoped<ITipoComercioService, TipoComercioService>();
 builder.Services.AddScoped<ICajaService, CajaService>();
+builder.Services.AddScoped<ISinpeRepository, SinpeRepository>();
+builder.Services.AddScoped<ISinpeService, SinpeService>();
+builder.Services.AddScoped<ICajaRepository, CajaRepository>();
 
 
 var app = builder.Build();

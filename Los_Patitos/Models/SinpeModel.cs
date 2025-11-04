@@ -19,7 +19,7 @@ namespace Los_Patitos.Models
         public decimal Monto { get; set; }
         public DateTime FechaDeRegistro { get; set; } = DateTime.Now;
 
-        public string Descripcion { get; set; }
+        public string? Descripcion { get; set; }
         public bool Estado { get; set; } = false;
 
 

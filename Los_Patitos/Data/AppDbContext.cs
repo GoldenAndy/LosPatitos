@@ -11,6 +11,7 @@ namespace Los_Patitos.Data
         public DbSet<TipoIdentificacion> TiposIdentificacion { get; set; }
         public DbSet<TipoComercio> TiposComercio { get; set; }
         public DbSet<CajaModel> Caja_G4 { get; set; }
+        public DbSet<SinpeModel> Sinpe_G4 { get; set; }
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -37,6 +38,47 @@ namespace Los_Patitos.Data
                 e.Property(x => x.Nombre).HasMaxLength(50);
             });
 
+            modelBuilder.Entity<SinpeModel>(e =>
+            {
+                e.ToTable("Sinpe_G4");
+                e.HasKey(s => s.IdSinpe);
+
+                e.Property(s => s.TelefonoOrigen)
+                    .HasMaxLength(10)
+                    .IsRequired();
+
+                e.Property(s => s.NombreOrigen)
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                e.Property(s => s.TelefonoDestinaria)
+                    .HasMaxLength(10)
+                    .IsRequired();
+
+                e.Property(s => s.NombreDestinaria)
+                    .HasMaxLength(200)
+                    .IsRequired();
+
+                e.Property(s => s.Monto)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+
+                e.Property(s => s.FechaDeRegistro)
+                    .IsRequired();
+
+                e.Property(s => s.Descripcion)
+                    .HasMaxLength(50);
+
+                e.Property(s => s.Estado)
+                    .IsRequired();
+
+                //FK de Caja
+                e.HasOne(s => s.Caja)
+                    .WithMany()
+                    .HasForeignKey(s => s.IdCaja)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
 
 
             modelBuilder.Entity<CajaModel>()
@@ -49,11 +91,11 @@ namespace Los_Patitos.Data
 
             modelBuilder.Entity<CajaModel>()
                 .HasIndex(c => new { c.IdComercio, c.Nombre })
-                .IsUnique(); // no puede haber dos cajas con el mismo nombre en el mismo comercio
+                .IsUnique(); //no pueden haber dos cajas con el mismo nombre en el mismo comercio
 
             modelBuilder.Entity<CajaModel>()
                 .HasIndex(c => c.TelefonoSINPE)
-                .IsUnique(); // no puede haber dos cajas activas con el mismo teléfono
+                .IsUnique(); //no pueden haber dos cajas activas con el mismo teléfono
 
             base.OnModelCreating(modelBuilder);
         }

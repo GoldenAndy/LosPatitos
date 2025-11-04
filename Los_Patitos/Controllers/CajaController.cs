@@ -9,10 +9,12 @@ namespace Los_Patitos.Controllers
     public class CajaController : Controller
     {
         private readonly ICajaService _cajaService;
+        private readonly ISinpeService _sinpeService;
 
-        public CajaController(ICajaService cajaService)
+        public CajaController(ICajaService cajaService, ISinpeService sinpeService)
         {
             _cajaService = cajaService;
+            _sinpeService = sinpeService;
         }
 
         public async Task<IActionResult> Index(int idComercio)
@@ -88,6 +90,21 @@ namespace Los_Patitos.Controllers
             }
 
             return View(caja);
+        }
+
+        //Ver Sinpes por caja
+        public async Task<IActionResult> VerSinpe(int idCaja)
+        {
+            var caja = await _cajaService.GetByIdAsync(idCaja);
+            if (caja == null)
+            {
+                TempData["Error"] = "Caja no encontrada.";
+                return RedirectToAction("Index", "Comercio");
+            }
+
+            var pagos = await _sinpeService.ListarPorCajaAsync(idCaja);
+            ViewBag.Caja = caja;
+            return View(pagos); //Views/Caja/VerSinpe
         }
     }
 }
