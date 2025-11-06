@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;   
+using Microsoft.EntityFrameworkCore;
 using MySqlConnector;                 //Esto sirve para mitigar duplicados
 using Los_Patitos.Business;
 using Los_Patitos.Models;

@@ -1,0 +1,85 @@
+﻿@model IEnumerable<Los_Patitos.Models.BitacoraEvento>
+@{
+    ViewData["Title"] = "Bitácora de eventos";
+}
+
+<h2 class="mb-3">@ViewData["Title"]</h2>
+
+<form method="get" class="row g-2 mb-3">
+    <div class="col-sm-3">
+        <input name="tabla" value="@ViewBag.Tabla" class="form-control" placeholder="Nombre Tabla" />
+    </div>
+
+    @* Dropdown para filtrar la bitácora por tipo de evento *@
+    <div class="col-sm-2">
+        <select name="tipo" class="form-select">
+            <option value=""> Tipo </option>
+            <option value="Registrar" selected="@(ViewBag.Tipo == "Registrar")">Registrar</option>
+            <option value="Editar" selected="@(ViewBag.Tipo == "Editar")">Editar</option>
+            <option value="Eliminar" selected="@(ViewBag.Tipo == "Eliminar")">Eliminar</option>
+            <option value="Error" selected="@(ViewBag.Tipo == "Error")">Error</option>
+        </select>
+    </div>
+    <div class="col-sm-3">
+        <input name="q" value="@ViewBag.Q" class="form-control" placeholder="Buscar texto/Id en Descripción/JSON" />
+    </div>
+    <div class="col-sm-2">
+        <button class="btn btn-primary w-100">Filtrar</button>
+    </div>
+</form>
+
+<div class="table-responsive">
+    <table class="table table-sm table-striped align-middle">
+        <thead class="table-light">
+            <tr>
+                <th>IdEvento</th>
+                <th>TablaDeEvento</th>
+                <th>TipoDeEvento</th>
+                <th style="white-space: nowrap; min-width: 160px;">FechaDeEvento</th>
+                <th style="min-width:260px;">Descripción</th>
+                <th style="min-width:220px;">StackTrace</th>
+                <th style="min-width:260px;">DatosAnteriores</th>
+                <th style="min-width:260px;">DatosPosteriores</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var e in Model){
+                <tr>
+                    <td>@e.IdEvento</td>
+                    <td>@e.TablaDeEvento</td>
+                    <td>
+                        <span style="color:#d00000; font-weight:bold;">
+                            @e.TipoDeEvento
+                        </span>
+                    </td>
+                    <td>@e.FechaDeEvento.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                    <td class="text-break">@e.DescripcionDeEvento</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(e.StackTrace)){
+                            <details>
+                                <summary>ver</summary>
+                                <pre class="mb-0 small">@e.StackTrace</pre>
+                            </details>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(e.DatosAnteriores)){
+                            <details>
+                                <summary>ver</summary>
+                                <pre class="mb-0 small">@e.DatosAnteriores</pre>
+                            </details>
+                        }
+                    </td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(e.DatosPosteriores)){
+                            <details>
+                                <summary>ver</summary>
+                                <pre class="mb-0 small">@e.DatosPosteriores</pre>
+                            </details>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

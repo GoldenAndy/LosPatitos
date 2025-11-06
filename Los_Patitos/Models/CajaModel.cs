@@ -1,7 +1,7 @@
 ﻿
 namespace Los_Patitos.Models
 {
-    public class CajaModel
+    public class CajaModel : EntidadAuditable //CajaModel hereda campos de auditoría (CreatedAt, ModifiedAt) de EntidadAuditable
     {
         public int IdCaja { get; set; }
 

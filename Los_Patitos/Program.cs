@@ -24,7 +24,7 @@ builder.Services.AddScoped<ICajaService, CajaService>();
 builder.Services.AddScoped<ISinpeRepository, SinpeRepository>();
 builder.Services.AddScoped<ISinpeService, SinpeService>();
 builder.Services.AddScoped<ICajaRepository, CajaRepository>();
-
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
 

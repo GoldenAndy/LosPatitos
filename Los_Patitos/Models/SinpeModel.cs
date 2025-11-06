@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Los_Patitos.Models
 {
-    public class SinpeModel
+    public class SinpeModel : EntidadAuditable //SinpeModel hereda campos de auditoría (CreatedAt, ModifiedAt) de EntidadAuditable
     {
         public int IdSinpe { get; set; }
 

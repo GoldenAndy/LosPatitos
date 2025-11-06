@@ -2,7 +2,7 @@
 
 namespace Los_Patitos.Models
 {
-    public class Comercio
+    public class Comercio : EntidadAuditable //Comercio hereda campos de auditoría (CreatedAt, ModifiedAt) de EntidadAuditable
     {
         public int IdComercio { get; set; }
 
