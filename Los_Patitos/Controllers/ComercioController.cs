@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using MySqlConnector;                 //Esto sirve para mitigar duplicados
+using MySqlConnector;                 // Esto sirve para mitigar duplicados
 using Los_Patitos.Business;
 using Los_Patitos.Models;
 
@@ -12,15 +12,18 @@ namespace Los_Patitos.Controllers
         private readonly IComercioService _comercios;
         private readonly ITipoIdentificacionService _tiposIdentificacion;
         private readonly ITipoComercioService _tiposComercio;
+        private readonly IBitacoraService _bitacora; // service de bitácora para guardar errores con stacktrace
 
         public ComercioController(
             IComercioService comercios,
             ITipoIdentificacionService tiposIdentificacion,
-            ITipoComercioService tiposComercio)
+            ITipoComercioService tiposComercio,
+            IBitacoraService bitacora) 
         {
             _comercios = comercios;
             _tiposIdentificacion = tiposIdentificacion;
             _tiposComercio = tiposComercio;
+            _bitacora = bitacora; 
         }
 
         // =========================
@@ -62,14 +65,13 @@ namespace Los_Patitos.Controllers
         // CREAR (POST)
         // =========================
         [HttpPost]
-        public IActionResult Crear(Comercio modelo)
+        public async Task<IActionResult> Crear(Comercio modelo) 
         {
             if (!ModelState.IsValid)
             {
                 CargarOpciones(incluirEstado: false);
                 return View(modelo);
             }
-
             try
             {
                 _comercios.Registrar(modelo);
@@ -79,18 +81,31 @@ namespace Los_Patitos.Controllers
             // 1062 = Duplicate entry (índice UNIQUE violado)
             catch (DbUpdateException dbex) when (dbex.InnerException is MySqlException mysql && mysql.Number == 1062)
             {
+                // escribir stacktrace en bitácora
+                await LogErrorAsync("Comercio",
+                    $"Violación de UNIQUE (1062) en Crear. Ruta: {Request?.Path}",
+                    dbex);
+
                 ModelState.AddModelError(nameof(Comercio.Identificacion), "Ya existe un comercio con esa identificación.");
                 CargarOpciones(incluirEstado: false);
                 return View(modelo);
             }
             catch (KeyNotFoundException ex)
             {
+                await LogErrorAsync("Comercio",
+                    $"Clave no encontrada en Crear. Ruta: {Request?.Path}",
+                    ex);
+
                 ModelState.AddModelError(string.Empty, ex.Message);
                 CargarOpciones(incluirEstado: false);
                 return View(modelo);
             }
-            catch
+            catch (Exception ex) 
             {
+                await LogErrorAsync("Comercio",
+                    $"Error inesperado en Crear. Ruta: {Request?.Path}",
+                    ex);
+
                 ModelState.AddModelError(string.Empty, "Ocurrió un error inesperado.");
                 CargarOpciones(incluirEstado: false);
                 return View(modelo);
@@ -119,12 +134,13 @@ namespace Los_Patitos.Controllers
         // EDITAR (POST)
         // =========================
         [HttpPost]
-        public IActionResult Editar(int id, Comercio modelo)
+        public async Task<IActionResult> Editar(int id, Comercio modelo) // NUEVO: async
         {
             if (id != modelo.IdComercio) return BadRequest();
 
             if (!ModelState.IsValid)
             {
+
                 CargarOpciones(incluirEstado: true, modelo.TipoIdentificacion, modelo.TipoComercio, modelo.Estado);
                 return View(modelo);
             }
@@ -135,21 +151,33 @@ namespace Los_Patitos.Controllers
                 TempData["Ok"] = "Comercio actualizado.";
                 return RedirectToAction(nameof(Index));
             }
-            // 1062 = Duplicate entry (por si el usuario cambia algo que termina chocando con Identificación)
+            // 1062 = Duplicate entry
             catch (DbUpdateException dbex) when (dbex.InnerException is MySqlException mysql && mysql.Number == 1062)
             {
+                await LogErrorAsync("Comercio",
+                    $"Violación de UNIQUE (1062) en Editar. Ruta: {Request?.Path}",
+                    dbex);
+
                 ModelState.AddModelError(nameof(Comercio.Identificacion), "Ya existe un comercio con esa identificación.");
                 CargarOpciones(incluirEstado: true, modelo.TipoIdentificacion, modelo.TipoComercio, modelo.Estado);
                 return View(modelo);
             }
             catch (KeyNotFoundException ex)
             {
+                await LogErrorAsync("Comercio",
+                    $"Clave no encontrada en Editar. Ruta: {Request?.Path}",
+                    ex);
+
                 ModelState.AddModelError(string.Empty, ex.Message);
                 CargarOpciones(incluirEstado: true, modelo.TipoIdentificacion, modelo.TipoComercio, modelo.Estado);
                 return View(modelo);
             }
-            catch
+            catch (Exception ex) 
             {
+                await LogErrorAsync("Comercio",
+                    $"Error inesperado en Editar. Ruta: {Request?.Path}",
+                    ex);
+
                 ModelState.AddModelError(string.Empty, "Ocurrió un error inesperado.");
                 CargarOpciones(incluirEstado: true, modelo.TipoIdentificacion, modelo.TipoComercio, modelo.Estado);
                 return View(modelo);
@@ -175,6 +203,23 @@ namespace Los_Patitos.Controllers
                     new { Key = false, Value = "Inactivo" }
                 }, "Key", "Value", estadoSel.HasValue ? estadoSel.Value : true);
             }
+        }
+
+        // =========================
+        // Helper para escribir errores con stacktrace en bitácora
+        // =========================
+        private async Task LogErrorAsync(string tabla, string descripcion, Exception ex, CancellationToken ct = default)
+        {
+            await _bitacora.EscribirAsync(new BitacoraEvento
+            {
+                TablaDeEvento = tabla,
+                TipoDeEvento = "Error",
+                FechaDeEvento = DateTime.Now,
+                DescripcionDeEvento = descripcion,
+                StackTrace = ex.ToString(),
+                DatosAnteriores = null,
+                DatosPosteriores = null
+            }, ct);
         }
     }
 }

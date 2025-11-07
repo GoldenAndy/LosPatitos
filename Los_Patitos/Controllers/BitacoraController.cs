@@ -11,14 +11,12 @@ namespace Los_Patitos.Controllers
         public BitacoraController(AppDbContext db) => _db = db;
 
         // Lista para bitácora con filtros por tabla, tipo, texto y FECHA (día exacto)
-        public async Task<IActionResult> Index(
-            string? tabla, string? tipo, string? q, DateTime? fecha,
-            int take = 500, CancellationToken ct = default)
+        public async Task<IActionResult> Index(string? tabla, string? tipo, string? q, DateTime? fecha, int take = 500, CancellationToken ct = default)
         {
-            // query sin tracking para lectura rápida
+            // query sin tracking
             var qry = _db.BITACORA_EVENTOS.AsNoTracking();
 
-            // Filtros existentes
+            // Filtros 
             if (!string.IsNullOrWhiteSpace(tabla))
                 qry = qry.Where(b => b.TablaDeEvento == tabla);
 

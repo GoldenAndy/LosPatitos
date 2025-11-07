@@ -9,7 +9,7 @@ builder.Services.AddControllersWithViews();
 
 var cs = builder.Configuration.GetConnectionString("MySqlConnection");
 
-builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(cs, ServerVersion.AutoDetect(cs))); 
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(cs, ServerVersion.AutoDetect(cs)));
 builder.Services.AddScoped<IComercioRepository, ComercioRepository>();
 builder.Services.AddScoped<IComercioService, ComercioService>();
 builder.Services.AddScoped<ITipoIdentificacionRepository, TipoIdentificacionRepository>();
