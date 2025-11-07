@@ -10,7 +10,7 @@ namespace Los_Patitos.Data
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
-        // DbSets
+        // DbSets 
         public DbSet<Comercio> Comercios { get; set; }
         public DbSet<TipoIdentificacion> TiposIdentificacion { get; set; }
         public DbSet<TipoComercio> TiposComercio { get; set; }
@@ -18,84 +18,84 @@ namespace Los_Patitos.Data
         public DbSet<SinpeModel> Sinpe_G4 { get; set; }
         public DbSet<BitacoraEvento> BITACORA_EVENTOS { get; set; } = null!;
 
-        //AUDITORÍA, helpers JSON y snapshots
-
-        // para guardar objetos en la bitácora en formato JSON sin que deje de funcionar cuando hay relaciones entre tablas
+        // AUDITORIA JSON 
+        // opciones para serializar objetos a JSON en la auditoría
         private static readonly JsonSerializerOptions _auditJson = new()
         {
             WriteIndented = false,
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, // No escribir valores nulos
-            ReferenceHandler = ReferenceHandler.IgnoreCycles 
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, // No escribir nulls
+            ReferenceHandler = ReferenceHandler.IgnoreCycles // para que no hayan ciclos en navegación
         };
 
-        //para DatosAnteriores y DatosPosteriores, convierte un objeto a JSON o null si es null 
+        // Convierte objeto a JSON (o null si no existe)
         private static string? ToJson(object? obj) =>
             obj is null ? null : JsonSerializer.Serialize(obj, _auditJson);
 
+        // llama al nombre de la tabla asociada a la entidad
         private static string TableName(EntityEntry e) =>
             e.Metadata.GetTableName() ?? e.Metadata.ClrType.Name;
 
-        // Agrega las fechas automáticas de creación y modificación para las entidades auditables antes de guardarlas en la base de datos
-        // y asigna CreatedAtUtc o ModifiedAtUtc dependiendo de que accion se haya hecho
+        // Asigna timestamps de creación/modificación a auditoria
         private void TouchAuditFields()
         {
             var now = DateTime.Now;
-            foreach (var e in ChangeTracker.Entries<EntidadAuditable>()) 
+            foreach (var e in ChangeTracker.Entries<EntidadAuditable>())
             {
                 if (e.State == EntityState.Added)
                 {
-                    e.Entity.CreatedAtUtc = now;
+                    e.Entity.CreatedAtUtc = now; // Fecha de creación
                 }
                 else if (e.State == EntityState.Modified)
                 {
-                    e.Entity.ModifiedAtUtc = now;
+                    e.Entity.ModifiedAtUtc = now; // Fecha de modificación
                 }
             }
         }
 
-        // Recorre todas las entidades que han cambiado, detecta si fueron Insertadas(Added) o Editadas(Modified)
-        // y captura sus valores actuales y anteriores
+        // Construye registros de auditoría para operaciones Insert/Edit
         private IEnumerable<BitacoraEvento> BuildAuditEntries()
         {
             var now = DateTime.Now;
             var list = new List<BitacoraEvento>();
 
             foreach (var entry in ChangeTracker.Entries()
-                         .Where(x => x.Entity is not BitacoraEvento &&
-                                     x.State is EntityState.Added or EntityState.Modified))
+                     .Where(x => x.Entity is not BitacoraEvento &&
+                                 x.State is EntityState.Added or EntityState.Modified))
             {
                 var tabla = TableName(entry);
 
-                Dictionary<string, object?> SnapshotPropsCurrent() //Captura valores actuales de la entidad
+                // Valores actuales de la entidad
+                Dictionary<string, object?> SnapshotPropsCurrent() // aca Dictionary es para representar los nombres de las propiedades de la entidad y sus valores
                     => entry.Properties
-                            .Where(p => !p.Metadata.IsShadowProperty() && !p.IsTemporary)
-                            .ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
+                           .Where(p => !p.Metadata.IsShadowProperty() && !p.IsTemporary)
+                           .ToDictionary(p => p.Metadata.Name, p => p.CurrentValue);
 
-                Dictionary<string, object?> SnapshotPropsOriginal() //Captura valores originales en el Entity Tracker
+                // Valores originales en el ChangeTracker
+                Dictionary<string, object?> SnapshotPropsOriginal()
                     => entry.Properties
-                            .Where(p => !p.Metadata.IsShadowProperty() && !p.IsTemporary)
-                            .ToDictionary(p => p.Metadata.Name, p => p.OriginalValue);
+                           .Where(p => !p.Metadata.IsShadowProperty() && !p.IsTemporary)
+                           .ToDictionary(p => p.Metadata.Name, p => p.OriginalValue);
 
-                Dictionary<string, object?> SnapshotPropsFromDb() //Intenta obtener los valores reales desde la base de datos
+                // Intenta obtener valores reales desde la BD
+                Dictionary<string, object?> SnapshotPropsFromDb()
                 {
                     try
                     {
-                        var dbValues = entry.GetDatabaseValues(); 
-                        if (dbValues == null) return SnapshotPropsOriginal();
-                        var dict = new Dictionary<string, object?>();
-                        foreach (var p in entry.Metadata.GetProperties())
-                        {
-                            if (p.IsShadowProperty()) continue;
-                            dict[p.Name] = dbValues[p];
-                        }
-                        return dict;
+                        var values = entry.GetDatabaseValues();
+                        if (values == null) return SnapshotPropsOriginal();
+
+                        return entry.Metadata.GetProperties()
+                            .Where(p => !p.IsShadowProperty())
+                            .ToDictionary(p => p.Name, p => values[p]);
                     }
                     catch
                     {
-                        return SnapshotPropsOriginal();
+                        return SnapshotPropsOriginal(); // Fallback
                     }
                 }
-                if (entry.State == EntityState.Added) // Guarda datos insertados
+
+                // Auditoría de inserción
+                if (entry.State == EntityState.Added)
                 {
                     var curr = SnapshotPropsCurrent();
                     list.Add(new BitacoraEvento
@@ -104,12 +104,13 @@ namespace Los_Patitos.Data
                         TipoDeEvento = "Registrar",
                         FechaDeEvento = now,
                         DescripcionDeEvento = $"Inserción en {tabla}",
-                        StackTrace = string.Empty,
-                        DatosAnteriores = ToJson(curr),
+                        StackTrace = string.Empty, // Sin error
+                        DatosAnteriores = ToJson(curr), // Datos insertados
                         DatosPosteriores = null
                     });
                 }
-                else if (entry.State == EntityState.Modified) // Guarda datos editados
+                // Auditoría de actualización
+                else if (entry.State == EntityState.Modified)
                 {
                     var antes = SnapshotPropsFromDb();
                     var despues = SnapshotPropsCurrent();
@@ -120,10 +121,10 @@ namespace Los_Patitos.Data
                         TipoDeEvento = "Editar",
                         FechaDeEvento = now,
                         DescripcionDeEvento = $"Actualización en {tabla}",
-                        StackTrace = string.Empty,
-                        DatosAnteriores = ToJson(antes),
-                        DatosPosteriores = ToJson(despues)
-                    });               
+                        StackTrace = string.Empty, // Sin error
+                        DatosAnteriores = ToJson(antes), // Valores previos
+                        DatosPosteriores = ToJson(despues) // Nuevos valores
+                    });
                 }
             }
 
@@ -133,11 +134,11 @@ namespace Los_Patitos.Data
         // MODELOS y MAPEO 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-        //COMERCIO
-            modelBuilder.Entity<Comercio>(entity =>
+            // COMERCIO
+            modelBuilder.Entity<Comercio>(e =>
             {
-                entity.ToTable("comercio_G4");
-                entity.HasKey(e => e.IdComercio);
+                e.ToTable("comercio_G4");
+                e.HasKey(x => x.IdComercio);
             });
 
             modelBuilder.Entity<TipoIdentificacion>(e =>
@@ -154,7 +155,7 @@ namespace Los_Patitos.Data
                 e.Property(x => x.Nombre).HasMaxLength(50);
             });
 
-        //SINPE
+            // SINPE
             modelBuilder.Entity<SinpeModel>(e =>
             {
                 e.ToTable("Sinpe_G4");
@@ -169,14 +170,13 @@ namespace Los_Patitos.Data
                 e.Property(s => s.Descripcion).HasMaxLength(50);
                 e.Property(s => s.Estado).IsRequired();
 
-                // FK de Caja
                 e.HasOne(s => s.Caja)
                     .WithMany()
                     .HasForeignKey(s => s.IdCaja)
                     .OnDelete(DeleteBehavior.Restrict);
             });
 
-            //CAJAS
+            // Caja
             modelBuilder.Entity<CajaModel>()
                 .HasKey(c => c.IdCaja);
 
@@ -193,137 +193,69 @@ namespace Los_Patitos.Data
                 .HasIndex(c => c.TelefonoSINPE)
                 .IsUnique();
 
-            //BITÁCORA_EVENTOS
+            // BITACORA EVENTOS
             modelBuilder.Entity<BitacoraEvento>(e =>
             {
                 e.ToTable("BITACORA_EVENTOS");
                 e.HasKey(x => x.IdEvento);
 
                 e.Property(x => x.IdEvento)
-                .HasColumnName("idEvento")
-                .UseMySqlIdentityColumn();
+                    .HasColumnName("idEvento")
+                    .UseMySqlIdentityColumn();
 
-                e.Property(x => x.TablaDeEvento)
-                    .HasColumnName("TablaDeEvento")
-                    .HasMaxLength(20).IsRequired();
-
-                e.Property(x => x.TipoDeEvento)
-                    .HasColumnName("TipoDeEvento")
-                    .HasMaxLength(20).IsRequired();
-
-                e.Property(x => x.FechaDeEvento)
-                    .HasColumnName("FechaDeEvento")
-                    .IsRequired();
-
-                e.Property(x => x.DescripcionDeEvento)
-                    .HasColumnName("DescripcionDeEvento")
-                    .HasColumnType("LONGTEXT")
-                    .IsRequired();
-
-                e.Property(x => x.StackTrace)
-                    .HasColumnName("StackTrace")
-                    .HasColumnType("LONGTEXT")
-                    .IsRequired();
-
-                e.Property(x => x.DatosAnteriores)
-                    .HasColumnName("DatosAnteriores")
-                    .HasColumnType("LONGTEXT");
-
-                e.Property(x => x.DatosPosteriores)
-                    .HasColumnName("DatosPosteriores")
-                    .HasColumnType("LONGTEXT");
+                e.Property(x => x.TablaDeEvento).HasMaxLength(20).IsRequired();
+                e.Property(x => x.TipoDeEvento).HasMaxLength(20).IsRequired();
+                e.Property(x => x.FechaDeEvento).IsRequired();
+                e.Property(x => x.DescripcionDeEvento).HasColumnType("LONGTEXT").IsRequired();
+                e.Property(x => x.StackTrace).HasColumnType("LONGTEXT").IsRequired();
+                e.Property(x => x.DatosAnteriores).HasColumnType("LONGTEXT");
+                e.Property(x => x.DatosPosteriores).HasColumnType("LONGTEXT");
             });
 
             base.OnModelCreating(modelBuilder);
         }
 
-        // SaveChanges con bitácora automática 
+        // SaveChanges para auditoría automática
         public override int SaveChanges()
         {
-            try
+            TouchAuditFields(); // para fechas de creación/modificación
+            var audits = BuildAuditEntries().ToList();
+
+            var result = base.SaveChanges(); //guardar
+
+            // Si hubo auditoría, la guarda después sin romper la funcionalidad de todo
+            if (audits.Count > 0)
             {
-                TouchAuditFields(); // Marca CreatedAt/ModifiedAt en entidades auditables
-                var audits = BuildAuditEntries().ToList(); 
-                var result = base.SaveChanges();
-
-                if (audits.Count > 0) 
-                {
-                    try
-                    {
-                        BITACORA_EVENTOS.AddRange(audits);
-                        base.SaveChanges();
-                    }
-                    catch
-                    {
-
-                    }
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-
-            // Intento de registrar un evento GLOBAL/Error en bitácora
                 try
                 {
-                    BITACORA_EVENTOS.Add(new BitacoraEvento
-                    {
-                        TablaDeEvento = "GLOBAL", // para cuando el error no es de una tabla, si no del sistema en general
-                        TipoDeEvento = "Error",
-                        FechaDeEvento = DateTime.Now,
-                        DescripcionDeEvento = ex.Message,
-                        StackTrace = ex.StackTrace ?? string.Empty
-                    });
+                    BITACORA_EVENTOS.AddRange(audits); // Agrega eventos a la bitácora
                     base.SaveChanges();
                 }
-                catch {}
-
-                throw; 
+                catch { }
             }
+
+            return result;
         }
 
-        // Sobrescribe SaveChangesAsync para inyectar auditoría sin romper la operación principal
+        // SaveChanges pero asíncrona
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            try
-            {
-                TouchAuditFields();
-                var audits = BuildAuditEntries().ToList();
-                var result = await base.SaveChangesAsync(cancellationToken);
+            TouchAuditFields();
+            var audits = BuildAuditEntries().ToList();
 
-                if (audits.Count > 0)
-                {
-                    try
-                    {
-                        await BITACORA_EVENTOS.AddRangeAsync(audits, cancellationToken);
-                        await base.SaveChangesAsync(cancellationToken);
-                    }
-                    catch
-                    {
-                    }
-                }
+            var result = await base.SaveChangesAsync(cancellationToken);
 
-                return result;
-            }
-            catch (Exception ex)
+            if (audits.Count > 0)
             {
                 try
                 {
-                    await BITACORA_EVENTOS.AddAsync(new BitacoraEvento
-                    {
-                        TablaDeEvento = "GLOBAL", 
-                        TipoDeEvento = "Error",
-                        FechaDeEvento = DateTime.Now,
-                        DescripcionDeEvento = ex.Message,
-                        StackTrace = ex.StackTrace ?? string.Empty
-                    }, cancellationToken);
-                    await base.SaveChangesAsync(cancellationToken);
+                    await BITACORA_EVENTOS.AddRangeAsync(audits, cancellationToken); // Agrega bitácora
+                    await base.SaveChangesAsync(cancellationToken); // guarda y deja cancelar la operación async si el request se interrumpe
                 }
                 catch { }
-
-                throw;
             }
+
+            return result;
         }
     }
 }

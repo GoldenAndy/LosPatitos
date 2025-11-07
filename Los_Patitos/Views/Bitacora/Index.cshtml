@@ -20,6 +20,9 @@
             <option value="Error" selected="@(ViewBag.Tipo == "Error")">Error</option>
         </select>
     </div>
+    <div class="col-sm-2">
+        <input type="date" name="fecha" value="@ViewBag.Fecha" class="form-control" />
+    </div>
     <div class="col-sm-3">
         <input name="q" value="@ViewBag.Q" class="form-control" placeholder="Buscar texto/Id en Descripción/JSON" />
     </div>

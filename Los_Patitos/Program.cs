@@ -5,25 +5,22 @@ using Los_Patitos.Business;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddControllersWithViews();
 
-
 var cs = builder.Configuration.GetConnectionString("MySqlConnection");
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(cs, ServerVersion.AutoDetect(cs)));
 
-
+builder.Services.AddDbContext<AppDbContext>(options => options.UseMySql(cs, ServerVersion.AutoDetect(cs))); 
 builder.Services.AddScoped<IComercioRepository, ComercioRepository>();
 builder.Services.AddScoped<IComercioService, ComercioService>();
 builder.Services.AddScoped<ITipoIdentificacionRepository, TipoIdentificacionRepository>();
 builder.Services.AddScoped<ITipoComercioRepository, TipoComercioRepository>();
 builder.Services.AddScoped<ITipoIdentificacionService, TipoIdentificacionService>();
 builder.Services.AddScoped<ITipoComercioService, TipoComercioService>();
+builder.Services.AddScoped<ICajaRepository, CajaRepository>();
 builder.Services.AddScoped<ICajaService, CajaService>();
 builder.Services.AddScoped<ISinpeRepository, SinpeRepository>();
 builder.Services.AddScoped<ISinpeService, SinpeService>();
-builder.Services.AddScoped<ICajaRepository, CajaRepository>();
+builder.Services.AddScoped<IBitacoraService, BitacoraService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -36,9 +33,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
-
 app.UseAuthorization();
 
 app.MapControllerRoute(
