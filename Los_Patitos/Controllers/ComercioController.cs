@@ -134,7 +134,7 @@ namespace Los_Patitos.Controllers
         // EDITAR (POST)
         // =========================
         [HttpPost]
-        public async Task<IActionResult> Editar(int id, Comercio modelo) // NUEVO: async
+        public async Task<IActionResult> Editar(int id, Comercio modelo)
         {
             if (id != modelo.IdComercio) return BadRequest();
 

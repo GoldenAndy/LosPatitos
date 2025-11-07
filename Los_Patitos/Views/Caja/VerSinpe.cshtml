@@ -1,88 +1,126 @@
 ﻿@model IEnumerable<Los_Patitos.Models.SinpeModel>
-    @using Los_Patitos.Models
+@using Los_Patitos.Models
 
-    @{
-    ViewData["Title"] = "SINPEs Registrados";
-    CajaModel? caja = ViewBag.Caja as CajaModel;  
+@{
+    CajaModel? caja = ViewBag.Caja as CajaModel;
+}
+
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary fw-bold">
+        <i class="bi bi-bank"></i> @ViewData["Title"]
+    </h2>
+
+    <!-- Información de la Caja -->
+    @if (caja != null)
+    {
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-primary text-white fw-bold">
+                SINPE Actual de la Caja
+            </div>
+            <div class="card-body">
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-semibold text-secondary">Nombre de la Caja:</p>
+                        <p class="fs-5">@caja.Nombre</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-semibold text-secondary">Teléfono SINPE:</p>
+                        <p class="fs-5">@caja.TelefonoSINPE</p>
+                    </div>
+                </div>
+
+                <div class="row mb-2">
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-semibold text-secondary">Estado:</p>
+                        <span class="badge @(caja.Estado ? "bg-success" : "bg-danger")">
+                            @(caja.Estado ? "Activa" : "Inactiva")
+                        </span>
+                    </div>
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-semibold text-secondary">Fecha de Registro:</p>
+                        <p>@caja.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <p class="mb-1 fw-semibold text-secondary">Última Modificación:</p>
+                        <p>@((caja.FechaDeModificacion?.ToString("dd/MM/yyyy HH:mm")) ?? "Sin cambios")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
 
-    <h2>@ViewData["Title"]</h2>
-
-    @if (caja != null)
-{
-    <div class="card mb-4">
-        <div class="card-body">
-            <h5 class="card-title">Caja asociada</h5>
-            <dl class="row">
-                <dt class="col-sm-3">Nombre de la Caja</dt>
-                <dd class="col-sm-9">@caja.Nombre</dd>
-
-                <dt class="col-sm-3">Teléfono SINPE</dt>
-                <dd class="col-sm-9">@caja.TelefonoSINPE</dd>
-
-                <dt class="col-sm-3">Comercio</dt>
-                <dd class="col-sm-9">@(caja.Comercio?.Nombre ?? "—")</dd>
-
-                <dt class="col-sm-3">Estado</dt>
-                <dd class="col-sm-9">@(caja.Estado ? "Activa" : "Inactiva")</dd>
-
-                <dt class="col-sm-3">Fecha de Registro</dt>
-                <dd class="col-sm-9">@caja.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                <dt class="col-sm-3">Última Modificación</dt>
-                <dd class="col-sm-9">@((caja.FechaDeModificacion?.ToString("dd/MM/yyyy HH:mm")) ?? "—")</dd>
-            </dl>
+    <!-- SINPEs Recibidos -->
+    @if (Model == null || !Model.Any())
+    {
+        <div class="alert alert-info mt-4 text-center shadow-sm">
+            <i class="bi bi-info-circle"></i> No se han recibido SINPEs para esta caja.
         </div>
-    </div>
-}
-
-    @if (!Model.Any())
-{
-    <div class="alert alert-info">No hay SINPEs registrados para esta caja.</div>
-}
-else
-{
-    <div class="card">
-        <div class="card-body">
-            <h5 class="card-title">SINPEs Recibidos</h5>
-
-            @foreach (var sinpe in Model)
-            {
-            <div class="border rounded p-3 mb-3">
-                <dl class="row mb-0">
-                    <dt class="col-sm-3">ID SINPE</dt>
-                    <dd class="col-sm-9">@sinpe.IdSinpe</dd>
-
-                    <dt class="col-sm-3">Teléfono Origen</dt>
-                    <dd class="col-sm-9">@sinpe.TelefonoOrigen</dd>
-
-                    <dt class="col-sm-3">Nombre Origen</dt>
-                    <dd class="col-sm-9">@sinpe.NombreOrigen</dd>
-
-                    <dt class="col-sm-3">Teléfono Destino</dt>
-                    <dd class="col-sm-9">@sinpe.TelefonoDestinaria</dd>
-
-                    <dt class="col-sm-3">Nombre Destino</dt>
-                    <dd class="col-sm-9">@sinpe.NombreDestinaria</dd>
-
-                    <dt class="col-sm-3">Monto</dt>
-                    <dd class="col-sm-9">₡@sinpe.Monto.ToString("N2")</dd>
-
-                    <dt class="col-sm-3">Fecha de Registro</dt>
-                    <dd class="col-sm-9">@sinpe.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</dd>
-
-                    <dt class="col-sm-3">Descripción</dt>
-                    <dd class="col-sm-9">@(!string.IsNullOrWhiteSpace(sinpe.Descripcion) ? sinpe.Descripcion : "—")</dd>
-
-                    <dt class="col-sm-3">Estado</dt>
-                    <dd class="col-sm-9">@(sinpe.Estado ? "Sincronizado" : "No sincronizado")</dd>
-                </dl>
+    }
+    else
+    {
+        <div class="card shadow-sm border-0 mb-4">
+            <div class="card-header bg-secondary text-white fw-bold">
+                SINPEs Recibidos
             </div>
-            }
-        </div>
-    </div>
-}
+            <div class="card-body">
+                @foreach (var sinpe in Model.OrderByDescending(s => s.FechaDeRegistro))
+                {
+                    <div class="border rounded p-3 mb-3 bg-light">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1 fw-semibold text-secondary">Teléfono Origen:</p>
+                                <p>@sinpe.TelefonoOrigen</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 fw-semibold text-secondary">Nombre Origen:</p>
+                                <p>@sinpe.NombreOrigen</p>
+                            </div>
+                        </div>
 
-    <p class="mt-3">
-        <a asp-controller="Comercio" asp-action="Index" class="btn btn-outline-secondary">Volver</a>
-    </p>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p class="mb-1 fw-semibold text-secondary">Teléfono Destinatario:</p>
+                                <p>@sinpe.TelefonoDestinaria</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 fw-semibold text-secondary">Nombre Destinatario:</p>
+                                <p>@sinpe.NombreDestinaria</p>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-4">
+                                <p class="mb-1 fw-semibold text-secondary">Monto:</p>
+                                <p class="text-success fw-bold">₡@sinpe.Monto.ToString("N2")</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-1 fw-semibold text-secondary">Fecha:</p>
+                                <p>@sinpe.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</p>
+                            </div>
+                            <div class="col-md-4">
+                                <p class="mb-1 fw-semibold text-secondary">Estado:</p>
+                                <span class="badge @(sinpe.Estado ? "bg-success" : "bg-warning text-dark")">
+                                    @(sinpe.Estado ? "Sincronizado" : "No sincronizado")
+                                </span>
+                            </div>
+                        </div>
+
+                        <div class="mt-2">
+                            <p class="mb-1 fw-semibold text-secondary">Descripción:</p>
+                            <p>@(!string.IsNullOrWhiteSpace(sinpe.Descripcion) ? sinpe.Descripcion : "Sin descripción")</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+    }
+
+    <div class="text-end mt-3">
+        <a asp-controller="Comercio" asp-action="Index" class="btn btn-outline-secondary">
+            <i class="bi bi-arrow-left"></i> Volver
+        </a>
+    </div>
+</div>

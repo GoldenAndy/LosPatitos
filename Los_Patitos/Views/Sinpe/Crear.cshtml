@@ -1,64 +1,95 @@
 ﻿@model Los_Patitos.Models.SinpeModel
 
-<h2>Registrar SINPE</h2>
+@{
+    ViewData["Title"] = "Transacción SINPE Móvil";
+}
 
-@if (!ViewData.ModelState.IsValid)
-{
-<div class="alert alert-danger">
-    @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-    <p>@error.ErrorMessage</p>
-        }
+<div class="container mt-4">
+    <h2 class="mb-4 text-primary fw-bold">
+        <i class="bi bi-phone"></i> @ViewData["Title"]
+    </h2>
+
+    <p class="text-muted mb-4">
+        Complete los datos para realizar una transferencia SINPE Móvil hacia una caja activa del sistema.
+    </p>
+
+    @if (!ViewData.ModelState.IsValid)
+    {
+        <div class="alert alert-danger shadow-sm">
+            <i class="bi bi-exclamation-triangle"></i> Se encontraron los siguientes errores:
+            <ul class="mt-2 mb-0">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                    <li>@error.ErrorMessage</li>
+                }
+            </ul>
+        </div>
+    }
+
+    <form asp-action="Crear" method="post" class="shadow-sm border rounded p-4 bg-light">
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="TelefonoOrigen" class="form-label fw-semibold">Teléfono Origen</label>
+                <input asp-for="TelefonoOrigen" class="form-control" placeholder="Ej. 85201234" />
+                <span asp-validation-for="TelefonoOrigen" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="NombreOrigen" class="form-label fw-semibold">Nombre Origen</label>
+                <input asp-for="NombreOrigen" class="form-control" placeholder="Ej. María Pérez" />
+                <span asp-validation-for="NombreOrigen" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="TelefonoDestinaria" class="form-label fw-semibold">Teléfono Destino</label>
+                <input asp-for="TelefonoDestinaria" class="form-control" placeholder="Ej. 88887777" />
+                <span asp-validation-for="TelefonoDestinaria" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="NombreDestinaria" class="form-label fw-semibold">Nombre Destino</label>
+                <input asp-for="NombreDestinaria" class="form-control" placeholder="Ej. Caja Pepito" />
+                <span asp-validation-for="NombreDestinaria" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="Monto" class="form-label fw-semibold">Monto (₡)</label>
+                <input asp-for="Monto" type="number" step="0.01" min="0.01" class="form-control" placeholder="Ej. 5000.00" />
+                <span asp-validation-for="Monto" class="text-danger"></span>
+            </div>
+
+            <div class="col-md-6 mb-3">
+                <label asp-for="Descripcion" class="form-label fw-semibold">Descripción (opcional)</label>
+                <input asp-for="Descripcion" class="form-control" placeholder="Ej. Compra de accesorios" />
+                <span asp-validation-for="Descripcion" class="text-danger"></span>
+            </div>
+        </div>
+
+        <div class="d-flex justify-content-between mt-4">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="bi bi-arrow-left"></i> Volver
+            </a>
+            <button type="submit" class="btn btn-success px-4">
+                <i class="bi bi-send-fill"></i> Hacer Transacción
+            </button>
+        </div>
+    </form>
+
+    @if (ViewBag.Error != null)
+    {
+        <div class="alert alert-danger mt-3 shadow-sm">
+            <i class="bi bi-x-circle"></i> @ViewBag.Error
+        </div>
+    }
+
+    @if (TempData["Ok"] != null)
+    {
+        <div class="alert alert-success mt-3 shadow-sm">
+            <i class="bi bi-check-circle"></i> @TempData["Ok"]
+        </div>
+    }
 </div>
-}
-
-<form asp-action="Crear" method="post">
-    <div class="mb-3">
-        <label asp-for="TelefonoOrigen" class="form-label">Teléfono Origen</label>
-        <input asp-for="TelefonoOrigen" class="form-control" />
-        <span asp-validation-for="TelefonoOrigen" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="NombreOrigen" class="form-label">Nombre Origen</label>
-        <input asp-for="NombreOrigen" class="form-control" />
-        <span asp-validation-for="NombreOrigen" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="TelefonoDestinaria" class="form-label">Teléfono Destino</label>
-        <input asp-for="TelefonoDestinaria" class="form-control" />
-        <span asp-validation-for="TelefonoDestinaria" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="NombreDestinaria" class="form-label">Nombre Destino</label>
-        <input asp-for="NombreDestinaria" class="form-control" />
-        <span asp-validation-for="NombreDestinaria" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Monto" class="form-label">Monto (₡)</label>
-        <input asp-for="Monto" type="number" step="0.01" min="0.01" class="form-control" />
-        <span asp-validation-for="Monto" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Descripcion" class="form-label">Descripción (opcional)</label>
-        <input asp-for="Descripcion" class="form-control" />
-        <span asp-validation-for="Descripcion" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Registrar</button>
-    <a asp-controller="Home" asp-action="Index" class="btn btn-secondary">Volver</a>
-</form>
-
-@if (ViewBag.Error != null)
-{
-<div class="alert alert-danger mt-2">@ViewBag.Error</div>
-}
-
-@if (TempData["Ok"] != null)
-{
-<div class="alert alert-success mt-2">@TempData["Ok"]</div>
-}
