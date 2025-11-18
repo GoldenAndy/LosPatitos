@@ -17,6 +17,9 @@ namespace Los_Patitos.Data
         public DbSet<CajaModel> Caja_G4 { get; set; }
         public DbSet<SinpeModel> Sinpe_G4 { get; set; }
         public DbSet<BitacoraEvento> BITACORA_EVENTOS { get; set; } = null!;
+        public DbSet<ConfiguracionComercio> ConfiguracionesComercio { get; set; }
+        public DbSet<ReporteMensual> ReportesMensuales { get; set; }
+
 
         // AUDITORIA JSON 
         // opciones para serializar objetos a JSON en la auditoría
@@ -192,6 +195,51 @@ namespace Los_Patitos.Data
             modelBuilder.Entity<CajaModel>()
                 .HasIndex(c => c.TelefonoSINPE)
                 .IsUnique();
+
+
+            // CONFIGURACIÓN DE COMERCIO
+            modelBuilder.Entity<ConfiguracionComercio>(e =>
+            {
+                e.ToTable("ConfiguracionComercio_G4");
+
+                e.HasKey(x => x.IdConfiguracion);
+
+                e.Property(x => x.TipoConfiguracion).IsRequired();
+                e.Property(x => x.Comision).IsRequired();
+                e.Property(x => x.FechaDeRegistro).IsRequired();
+                e.Property(x => x.Estado).IsRequired();
+                e.HasOne(x => x.Comercio)
+                 .WithMany()
+                 .HasForeignKey(x => x.IdComercio)
+                 .OnDelete(DeleteBehavior.Restrict);
+
+
+                e.HasIndex(x => x.IdComercio)
+                 .IsUnique();
+            });
+
+            // REPORTE MENSUAL
+            modelBuilder.Entity<ReporteMensual>(e =>
+            {
+                e.ToTable("ReporteMensual_G4");
+
+                e.HasKey(x => x.IdReporte);
+
+                e.Property(x => x.CantidadDeCajas).IsRequired();
+                e.Property(x => x.MontoTotalRecaudado)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                e.Property(x => x.CantidadDeSINPES).IsRequired();
+                e.Property(x => x.MontoTotalComision)
+                    .HasColumnType("decimal(18,2)")
+                    .IsRequired();
+                e.Property(x => x.FechaDelReporte).IsRequired();
+
+                e.HasOne(x => x.Comercio)
+                    .WithMany()
+                    .HasForeignKey(x => x.IdComercio)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
 
             // BITACORA EVENTOS
             modelBuilder.Entity<BitacoraEvento>(e =>

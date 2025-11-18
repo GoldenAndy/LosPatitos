@@ -15,5 +15,13 @@ namespace Los_Patitos.Repositories
             return await _db.Caja_G4
                 .FirstOrDefaultAsync(c => c.TelefonoSINPE == telefonoSinpe);
         }
+
+
+        public async Task<List<CajaModel>> ListarPorComercioAsync(int idComercio)
+        {
+            return await _db.Caja_G4
+                .Where(c => c.IdComercio == idComercio)
+                .ToListAsync();
+        }
     }
 }

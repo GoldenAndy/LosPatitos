@@ -2,6 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Los_Patitos.Data;
 using Los_Patitos.Repositories;
 using Los_Patitos.Business;
+using OfficeOpenXml;
+
+ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +25,11 @@ builder.Services.AddScoped<ISinpeRepository, SinpeRepository>();
 builder.Services.AddScoped<ISinpeService, SinpeService>();
 builder.Services.AddScoped<IBitacoraService, BitacoraService>();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IConfiguracionComercioService, ConfiguracionComercioService>();
+builder.Services.AddScoped<IConfiguracionComercioRepository, ConfiguracionComercioRepository>();
+builder.Services.AddScoped<IReporteMensualRepository, ReporteMensualRepository>();
+builder.Services.AddScoped<IReporteMensualService, ReporteMensualService>();
+
 
 var app = builder.Build();
 

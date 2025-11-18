@@ -1,0 +1,61 @@
+﻿@model Los_Patitos.Models.Comercio
+@{
+    ViewData["Title"] = "Detalles del comercio";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<div class="card">
+    <div class="card-body">
+        <dl class="row">
+            <dt class="col-sm-3">Identificación</dt>
+            <dd class="col-sm-9">@Model.Identificacion</dd>
+
+            <dt class="col-sm-3">Tipo de identificación</dt>
+            <dd class="col-sm-9">
+                @(Model.TipoIdentificacion == 1 ? "Física"
+                                : Model.TipoIdentificacion == 2 ? "Jurídica"
+                                : "Desconocido")
+            </dd>
+
+            <dt class="col-sm-3">Nombre</dt>
+            <dd class="col-sm-9">@Model.Nombre</dd>
+
+            <dt class="col-sm-3">Tipo de comercio</dt>
+            <dd class="col-sm-9">
+                @(Model.TipoComercio == 1 ? "Restaurantes"
+                                : Model.TipoComercio == 2 ? "Supermercados"
+                                : Model.TipoComercio == 3 ? "Ferreterías"
+                                : Model.TipoComercio == 4 ? "Otros"
+                                : "Desconocido")
+            </dd>
+
+            <dt class="col-sm-3">Teléfono</dt>
+            <dd class="col-sm-9">@Model.Telefono</dd>
+
+            <dt class="col-sm-3">Correo electrónico</dt>
+            <dd class="col-sm-9">@Model.CorreoElectronico</dd>
+
+            <dt class="col-sm-3">Dirección</dt>
+            <dd class="col-sm-9">@Model.Direccion</dd>
+
+            <dt class="col-sm-3">Fecha de registro</dt>
+            <dd class="col-sm-9">@Model.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</dd>
+
+            <dt class="col-sm-3">Fecha de modificación</dt>
+            <dd class="col-sm-9">
+                @(Model.FechaDeModificacion.HasValue
+                                ? Model.FechaDeModificacion.Value.ToString("dd/MM/yyyy HH:mm")
+                                : "—")
+            </dd>
+
+            <dt class="col-sm-3">Estado</dt>
+            <dd class="col-sm-9">@(Model.Estado ? "Activo" : "Inactivo")</dd>
+        </dl>
+    </div>
+</div>
+
+<p class="mt-3">
+    <a asp-action="Editar" asp-route-id="@Model.IdComercio" class="btn btn-warning">Editar</a>
+    <a asp-action="Index" class="btn btn-outline-secondary">Volver</a>
+</p>

@@ -6,5 +6,6 @@ namespace Los_Patitos.Repositories
     public interface ICajaRepository
     {
         Task<CajaModel?> ObtenerPorTelefonoAsync(string telefonoSinpe);
+        Task<List<CajaModel>> ListarPorComercioAsync(int idComercio);
     }
 }

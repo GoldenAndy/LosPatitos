@@ -1,0 +1,44 @@
+﻿@model Los_Patitos.Models.ConfiguracionComercio
+
+@{
+    ViewData["Title"] = "Registrar configuración de comercio";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<div class="mb-3">
+    <label class="form-label">Comercio</label>
+    <input type="text" value="@ViewBag.NombreComercio" class="form-control" readonly />
+</div>
+
+<form asp-action="Crear" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <input type="hidden" asp-for="IdComercio" />
+
+    <div class="mb-3">
+        <label class="form-label">Tipo de configuración</label>
+        <select asp-for="TipoConfiguracion"
+                asp-items="ViewBag.TiposConfiguracion"
+                class="form-select"></select>
+        <span asp-validation-for="TipoConfiguracion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label class="form-label">Comisión (%)</label>
+        <input asp-for="Comision" class="form-control" type="number" min="0" max="100" />
+        <span asp-validation-for="Comision" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Guardar</button>
+    <a asp-controller="Comercio" asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

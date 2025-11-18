@@ -27,5 +27,24 @@ namespace Los_Patitos.Repositories
                 .Include(s => s.Caja)
                 .ToListAsync();
         }
+
+
+        public async Task<List<SinpeModel>> ListarPorCajasYMesAsync(
+            IEnumerable<int> idsCajas,
+            int year,
+            int month)
+                {
+                    var ids = idsCajas.ToList();
+                    if (!ids.Any())
+                        return new List<SinpeModel>();
+
+                    return await _db.Sinpe_G4
+                        .Where(s => ids.Contains(s.IdCaja) &&
+                                    s.FechaDeRegistro.Year == year &&
+                                    s.FechaDeRegistro.Month == month)
+                        .ToListAsync();
+                }
+
+
     }
 }

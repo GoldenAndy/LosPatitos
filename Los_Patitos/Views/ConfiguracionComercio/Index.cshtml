@@ -1,0 +1,63 @@
+﻿@model List<Los_Patitos.Models.ConfiguracionComercio>
+
+@{
+    ViewData["Title"] = "Configuración de comercios";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success">@TempData["Ok"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@if (Model == null || !Model.Any())
+{
+    <div class="alert alert-info">No hay configuraciones registradas.</div>
+}
+else
+{
+    <table class="table table-striped table-bordered align-middle">
+        <thead>
+            <tr>
+                <th>Comercio</th>
+                <th>Tipo de configuración</th>
+                <th>Comisión</th>
+                <th>Fecha de registro</th>
+                <th>Fecha de modificación</th>
+                <th>Estado</th>
+                <th style="width:120px;">Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var c in Model)
+            {
+                <tr>
+                    <td>@c.Comercio?.Nombre</td>
+                    <td>
+                        @(c.TipoConfiguracion == 1 ? "Plataforma"
+                                        : c.TipoConfiguracion == 2 ? "Externa"
+                                        : c.TipoConfiguracion == 3 ? "Ambas"
+                                        : "Desconocido")
+                                                    </td>
+                                                    <td>@c.Comision %</td>
+                                                    <td>@c.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</td>
+                                                    <td>
+                        @(c.FechaDeModificacion.HasValue
+                                        ? c.FechaDeModificacion.Value.ToString("dd/MM/yyyy HH:mm")
+                                        : "—")
+            </td>
+            <td>@(c.Estado ? "Activo" : "Inactivo")</td>
+            <td>
+                <a asp-action="Editar" asp-route-id="@c.IdConfiguracion"
+                   class="btn btn-sm btn-warning">Editar</a>
+            </td>
+        </tr>
+                }
+        </tbody>
+    </table>
+}
