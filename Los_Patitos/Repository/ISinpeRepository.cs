@@ -10,6 +10,9 @@ namespace Los_Patitos.Repositories
 
         Task<List<SinpeModel>> ListarPorCajasYMesAsync(IEnumerable<int> idsCajas, int year, int month);
 
+        Task<bool> SincronizarAsync(int idSinpe);
+
+
 
     }
 }

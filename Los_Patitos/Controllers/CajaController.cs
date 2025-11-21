@@ -106,5 +106,22 @@ namespace Los_Patitos.Controllers
             ViewBag.Caja = caja;
             return View(pagos); //Views/Caja/VerSinpe
         }
+
+
+        //Sincronizar Sinpe
+        public async Task<IActionResult> Sincronizar(int idSinpe, int idCaja)
+        {
+            var ok = await _sinpeService.SincronizarAsync(idSinpe);
+
+            if (!ok)
+                TempData["Error"] = "No se pudo sincronizar el SINPE.";
+
+            else
+                TempData["Success"] = "SINPE sincronizado correctamente.";
+
+            return RedirectToAction("VerSinpe", new { idCaja });
+        }
+
+
     }
 }

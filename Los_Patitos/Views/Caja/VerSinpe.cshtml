@@ -112,6 +112,20 @@
                             <p class="mb-1 fw-semibold text-secondary">Descripción:</p>
                             <p>@(!string.IsNullOrWhiteSpace(sinpe.Descripcion) ? sinpe.Descripcion : "Sin descripción")</p>
                         </div>
+
+                        @if (!sinpe.Estado) //Sincronizar Sinpe
+                        {
+                            <a asp-controller="Caja"
+                               asp-action="Sincronizar"
+                               asp-route-idSinpe="@sinpe.IdSinpe"
+                               asp-route-idCaja="@caja.IdCaja"
+                               class="btn btn-warning mt-2 fw-bold">
+                                <i class="bi bi-arrow-repeat"></i> Sincronizar
+                            </a>
+                        }
+
+
+
                     </div>
                 }
             </div>
@@ -123,4 +137,6 @@
             <i class="bi bi-arrow-left"></i> Volver
         </a>
     </div>
+
+
 </div>

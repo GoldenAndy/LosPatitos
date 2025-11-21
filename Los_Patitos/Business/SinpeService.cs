@@ -56,5 +56,12 @@ namespace Los_Patitos.Business
 
         private static bool EsTelefonoValido(string tel)
             => Regex.IsMatch(tel, @"^\d{8}$");
+
+
+        public async Task<bool> SincronizarAsync(int idSinpe)
+        {
+            return await _sinpeRepo.SincronizarAsync(idSinpe);
+        }
+
     }
 }

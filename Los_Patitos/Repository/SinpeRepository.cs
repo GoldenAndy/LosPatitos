@@ -46,5 +46,19 @@ namespace Los_Patitos.Repositories
                 }
 
 
+        //Sincronizar Sinpe
+        public async Task<bool> SincronizarAsync(int idSinpe)
+        {
+            var sinpe = await _db.Sinpe_G4.FindAsync(idSinpe);
+            if (sinpe == null) return false;
+
+            sinpe.Estado = true;
+
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+
+
     }
 }
