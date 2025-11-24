@@ -19,6 +19,7 @@ namespace Los_Patitos.Data
         public DbSet<BitacoraEvento> BITACORA_EVENTOS { get; set; } = null!;
         public DbSet<ConfiguracionComercio> ConfiguracionesComercio { get; set; }
         public DbSet<ReporteMensual> ReportesMensuales { get; set; }
+        public DbSet<UsuarioModel> Usuario_G4 { get; set; }
 
 
         // AUDITORIA JSON 
@@ -258,6 +259,35 @@ namespace Los_Patitos.Data
                 e.Property(x => x.StackTrace).HasColumnType("LONGTEXT").IsRequired();
                 e.Property(x => x.DatosAnteriores).HasColumnType("LONGTEXT");
                 e.Property(x => x.DatosPosteriores).HasColumnType("LONGTEXT");
+            });
+
+            //Usuario
+            modelBuilder.Entity<UsuarioModel>(e =>
+            {
+                e.ToTable("Usuario_G4");            
+
+                e.HasKey(x => x.IdUsuario);
+
+                e.Property(x => x.Nombres).HasMaxLength(100).IsRequired();
+
+                e.Property(x => x.PrimerApellido).HasMaxLength(100).IsRequired();
+
+                e.Property(x => x.SegundoApellido).HasMaxLength(100).IsRequired();
+
+                e.Property(x => x.Identificacion).HasMaxLength(10).IsRequired();
+
+                e.Property(x => x.CorreoElectronico).HasMaxLength(200).IsRequired();
+
+                e.Property(x => x.FechaDeRegistro).IsRequired();
+
+                e.Property(x => x.FechaDeModificacion).IsRequired(false);  
+
+                e.Property(x => x.Estado).IsRequired();
+
+                //FK con Comercio
+                e.HasOne(x => x.Comercio).WithMany().HasForeignKey(x => x.IdComercio).OnDelete(DeleteBehavior.Restrict);
+
+                e.HasIndex(x => x.Identificacion).IsUnique();
             });
 
             base.OnModelCreating(modelBuilder);
