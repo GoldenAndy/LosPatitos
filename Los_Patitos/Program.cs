@@ -29,6 +29,8 @@ builder.Services.AddScoped<IConfiguracionComercioService, ConfiguracionComercioS
 builder.Services.AddScoped<IConfiguracionComercioRepository, ConfiguracionComercioRepository>();
 builder.Services.AddScoped<IReporteMensualRepository, ReporteMensualRepository>();
 builder.Services.AddScoped<IReporteMensualService, ReporteMensualService>();
+builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 
 
 var app = builder.Build();

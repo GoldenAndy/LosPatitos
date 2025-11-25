@@ -1,0 +1,80 @@
+﻿@model List<Los_Patitos.Models.UsuarioModel>
+
+@{
+    ViewData["Title"] = "Usuarios";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+@if (TempData["Ok"] != null)
+{
+    <div class="alert alert-success">@TempData["Ok"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+<p>
+    <a asp-action="Crear"
+       asp-route-idComercio="@ViewBag.IdComercio"
+       class="btn btn-primary">
+        + Registrar Usuario
+    </a>
+
+</p>
+
+<table class="table table-striped table-bordered align-middle">
+    <thead>
+        <tr>
+            <th>Nombres</th>
+            <th>Primer Apellido</th>
+            <th>Segundo Apellido</th>
+            <th>Identificación</th>
+            <th>Correo Electrónico</th>
+            <th>Fecha Registro</th>
+            <th>Fecha Modificación</th>
+            <th>Estado</th>
+            <th style="width: 120px;">Acciones</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @if (Model == null || !Model.Any())
+        {
+            <tr>
+                <td colspan="9" class="text-center text-muted">No hay usuarios registrados.</td>
+            </tr>
+        }
+        else
+        {
+            foreach (var u in Model)
+            {
+                <tr>
+                    <td>@u.Nombres</td>
+                    <td>@u.PrimerApellido</td>
+                    <td>@u.SegundoApellido</td>
+                    <td>@u.Identificacion</td>
+                    <td>@u.CorreoElectronico</td>
+                    <td>@u.FechaDeRegistro.ToString("yyyy-MM-dd HH:mm")</td>
+                    <td>
+                        @(u.FechaDeModificacion?.ToString("yyyy-MM-dd HH:mm") ?? "-")
+                    </td>
+                    <td>
+                        @if (u.Estado)
+                        {
+                            <span class="text-success fw-bold">Activo</span>
+                        }
+                        else
+                        {
+                            <span class="text-danger fw-bold">Inactivo</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="Editar" asp-route-id="@u.IdUsuario" class="btn btn-sm btn-warning">Editar</a>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>

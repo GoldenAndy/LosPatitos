@@ -94,6 +94,13 @@ else
                             Configurar
                         </a>
 
+                        <a asp-controller="Usuario"
+                           asp-action="Index"
+                           asp-route-idComercio="@c.IdComercio"
+                           class="btn btn-sm btn-primary me-1">
+                            Usuarios
+                        </a>
+
                         <a asp-controller="Caja"
                            asp-action="Index"
                            asp-route-idComercio="@c.IdComercio"
@@ -102,7 +109,7 @@ else
                         </a>
 
                     </td>
-        </tr>
+                </tr>
                 }
         </tbody>
     </table>

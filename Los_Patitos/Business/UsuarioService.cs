@@ -1,7 +1,6 @@
 ﻿using Los_Patitos.Models;
 using Los_Patitos.Repositories;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace Los_Patitos.Business
 {
@@ -16,10 +15,11 @@ namespace Los_Patitos.Business
             _comercioRepo = comercioRepo;
         }
 
-        //REGISTRAR
+
+        // REGISTRAR
         public async Task<(bool ok, string? error, int? idUsuario)> RegistrarAsync(UsuarioModel input)
         {
-            //Validacaiones para el formulario
+            // Validaciones para el formulario
             if (string.IsNullOrWhiteSpace(input.Nombres))
                 return (false, "El nombre es obligatorio.", null);
 
@@ -41,7 +41,7 @@ namespace Los_Patitos.Business
             if (!EsCorreoValido(input.CorreoElectronico))
                 return (false, "El correo electrónico no es válido.", null);
 
-            //Validaciones del comercio
+            // Validaciones del comercio
             var comercio = await _comercioRepo.ObtenerPorIdAsync(input.IdComercio);
             if (comercio is null)
                 return (false, "El comercio asociado no existe.", null);
@@ -49,21 +49,22 @@ namespace Los_Patitos.Business
             if (!comercio.Estado)
                 return (false, "No se puede registrar usuarios en un comercio inactivo.", null);
 
-            //Validacion de id
+            // Validación de identificación única
             var existente = await _usuarioRepo.ObtenerPorIdentificacionAsync(input.Identificacion);
             if (existente is not null)
                 return (false, "Ya existe un usuario con esta identificación.", null);
 
-            //Valores automaticos
-            input.Estado = true; //usuario activo por defecto
+            // Valores automáticos
+            input.Estado = true; // usuario activo por defecto
             input.FechaDeRegistro = DateTime.Now;
             input.FechaDeModificacion = null;
 
-            //Registrar
+            // Registrar
             var id = await _usuarioRepo.CrearAsync(input);
 
             return (true, null, id);
         }
+
 
         // EDITAR
         public async Task<(bool ok, string? error)> EditarAsync(UsuarioModel input)
@@ -72,7 +73,7 @@ namespace Los_Patitos.Business
             if (original is null)
                 return (false, "El usuario no existe.");
 
-            //Validaciones para el formulario
+            // Validaciones para el formulario
             if (string.IsNullOrWhiteSpace(input.Nombres))
                 return (false, "El nombre es obligatorio.");
 
@@ -94,12 +95,12 @@ namespace Los_Patitos.Business
             if (!EsCorreoValido(input.CorreoElectronico))
                 return (false, "El correo electrónico no es válido.");
 
-            //Validar que la nueva identificación no choque con otro usuario
+            // Validar que la nueva identificación no choque con otro usuario
             var otro = await _usuarioRepo.ObtenerPorIdentificacionAsync(input.Identificacion);
             if (otro is not null && otro.IdUsuario != input.IdUsuario)
                 return (false, "Ya existe otro usuario con esta identificación.");
 
-            //Actualizar la info
+            // Actualizar la info
             original.Nombres = input.Nombres;
             original.PrimerApellido = input.PrimerApellido;
             original.SegundoApellido = input.SegundoApellido;
@@ -108,18 +109,31 @@ namespace Los_Patitos.Business
             original.Estado = input.Estado;
             original.FechaDeModificacion = DateTime.Now;
 
-            //Guardar cambios
+            // Guardar cambios
             await _usuarioRepo.EditarAsync(original);
 
             return (true, null);
         }
 
-        //LISTAR POR COMERCIO
-        public Task<List<UsuarioModel>> ListarPorComercioAsync(int idComercio) => _usuarioRepo.ListarPorComercioAsync(idComercio);
 
-        //Validaciones con expresiones regulares
-        private static bool EsIdentificacionValida(string id) => Regex.IsMatch(id, @"^\d{1,10}$");
+        // LISTAR POR COMERCIO
+        public Task<List<UsuarioModel>> ListarPorComercioAsync(int idComercio)
+            => _usuarioRepo.ListarPorComercioAsync(idComercio);
 
-        private static bool EsCorreoValido(string email) => Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+
+        // OBTENER POR ID (para GET Editar)
+        public async Task<UsuarioModel?> ObtenerPorIdAsync(int idUsuario)
+        {
+            return await _usuarioRepo.ObtenerPorIdAsync(idUsuario);
+        }
+
+
+
+        // Validaciones con expresiones regulares
+        private static bool EsIdentificacionValida(string id)
+            => Regex.IsMatch(id, @"^\d{1,10}$");
+
+        private static bool EsCorreoValido(string email)
+            => Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Los_Patitos.Business;
 using Los_Patitos.Models;
 
@@ -14,24 +13,40 @@ namespace Los_Patitos.Controllers
             _usuarioService = usuarioService;
         }
 
-        // GET: Crear
-        public IActionResult Crear()
+        // LISTA USUARIOS POR COMERCIO
+        // GET: /Usuario/Index?idComercio=5
+        public async Task<IActionResult> Index(int idComercio)
         {
-            return View(new UsuarioModel());
+            var usuarios = await _usuarioService.ListarPorComercioAsync(idComercio);
+
+            // Esto sirve para recordar el comercio actual en Crear y Editar
+            ViewBag.IdComercio = idComercio;
+
+            return View(usuarios);
         }
 
-        // POST: Crear
+
+        // GET: CREAR USUARIO
+        public IActionResult Crear(int idComercio)
+        {
+            return View(new UsuarioModel
+            {
+                IdComercio = idComercio
+            });
+        }
+
+
+        // POST: CREAR USUARIO
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Crear([Bind(
             "IdComercio,Nombres,PrimerApellido,SegundoApellido,Identificacion,CorreoElectronico"
         )] UsuarioModel modelo)
         {
-            //Si el campo no es visible en el formulario no se valida
             ModelState.Remove(nameof(UsuarioModel.FechaDeRegistro));
             ModelState.Remove(nameof(UsuarioModel.FechaDeModificacion));
             ModelState.Remove(nameof(UsuarioModel.Estado));
-            ModelState.Remove(nameof(UsuarioModel.IdNetUser));
             ModelState.Remove(nameof(UsuarioModel.Comercio));
 
             if (!ModelState.IsValid)
@@ -46,32 +61,32 @@ namespace Los_Patitos.Controllers
             }
 
             TempData["Ok"] = $"Usuario registrado con el Id #{idUsuario}.";
-            return RedirectToAction(nameof(Crear));
+
+            return RedirectToAction(nameof(Index), new { idComercio = modelo.IdComercio });
         }
 
-        // GET: Editar
+
+        // GET: EDITAR USUARIO
         public async Task<IActionResult> Editar(int id)
         {
-            var lista = await _usuarioService.ListarPorComercioAsync(0);
-
-            var usuario = lista.FirstOrDefault(x => x.IdUsuario == id);
+            var usuario = await _usuarioService.ObtenerPorIdAsync(id);
             if (usuario is null)
                 return NotFound();
 
             return View(usuario);
         }
 
-        // POST: Editar
+
+        // POST: EDITAR USUARIO
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Editar([Bind(
             "IdUsuario,IdComercio,Nombres,PrimerApellido,SegundoApellido,Identificacion,CorreoElectronico,Estado"
         )] UsuarioModel modelo)
         {
-            //Si el campo no se puede modificar no se valida
             ModelState.Remove(nameof(UsuarioModel.FechaDeRegistro));
             ModelState.Remove(nameof(UsuarioModel.FechaDeModificacion));
-            ModelState.Remove(nameof(UsuarioModel.IdNetUser));
             ModelState.Remove(nameof(UsuarioModel.Comercio));
 
             if (!ModelState.IsValid)
@@ -86,7 +101,9 @@ namespace Los_Patitos.Controllers
             }
 
             TempData["Ok"] = $"Usuario #{modelo.IdUsuario} modificado correctamente.";
-            return RedirectToAction("Index", "Usuario");
+
+            // Volver al listado de usuarios del comercio
+            return RedirectToAction(nameof(Index), new { idComercio = modelo.IdComercio });
         }
     }
 }

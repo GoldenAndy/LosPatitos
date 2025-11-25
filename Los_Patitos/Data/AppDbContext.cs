@@ -283,6 +283,8 @@ namespace Los_Patitos.Data
                 e.Property(x => x.FechaDeModificacion).IsRequired(false);  
 
                 e.Property(x => x.Estado).IsRequired();
+                
+                e.Property(x => x.IdNetUser).HasMaxLength(36).IsRequired(false);
 
                 //FK con Comercio
                 e.HasOne(x => x.Comercio).WithMany().HasForeignKey(x => x.IdComercio).OnDelete(DeleteBehavior.Restrict);

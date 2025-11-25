@@ -10,5 +10,6 @@ namespace Los_Patitos.Repositories
 
         int Crear(Comercio nuevo);
         void Actualizar(Comercio entidad);
+        Task<Comercio?> ObtenerPorIdAsync(int idComercio);
     }
 }

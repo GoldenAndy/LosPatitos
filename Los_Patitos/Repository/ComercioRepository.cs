@@ -1,5 +1,6 @@
 ﻿using Los_Patitos.Data;
 using Los_Patitos.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Los_Patitos.Repositories
 {
@@ -36,13 +37,20 @@ namespace Los_Patitos.Repositories
         {
             _db.Comercios.Add(nuevo);
             _db.SaveChanges();
-            return nuevo.IdComercio; // identity generado por MySQL
+            return nuevo.IdComercio; 
         }
 
         public void Actualizar(Comercio entidad)
         {
             _db.Comercios.Update(entidad);
             _db.SaveChanges();
+        }
+
+        // Implementación async para UsuarioService
+        public async Task<Comercio?> ObtenerPorIdAsync(int idComercio)
+        {
+            return await _db.Comercios
+                            .FirstOrDefaultAsync(c => c.IdComercio == idComercio);
         }
     }
 }

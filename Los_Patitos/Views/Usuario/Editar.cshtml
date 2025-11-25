@@ -1,0 +1,66 @@
+﻿@model Los_Patitos.Models.UsuarioModel
+
+@{
+    ViewData["Title"] = "Editar Usuario";
+}
+
+<h2 class="mb-3">Editar Usuario</h2>
+
+@if (ViewBag.Error != null)
+{
+    <div class="alert alert-danger">@ViewBag.Error</div>
+}
+
+<form asp-action="Editar" method="post">
+
+    <input type="hidden" asp-for="IdUsuario" />
+
+    <div class="mb-3">
+        <label asp-for="IdComercio" class="form-label"></label>
+        <input asp-for="IdComercio" class="form-control" readonly />
+        <span asp-validation-for="IdComercio" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Nombres" class="form-label"></label>
+        <input asp-for="Nombres" class="form-control" />
+        <span asp-validation-for="Nombres" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="PrimerApellido" class="form-label"></label>
+        <input asp-for="PrimerApellido" class="form-control" />
+        <span asp-validation-for="PrimerApellido" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="SegundoApellido" class="form-label"></label>
+        <input asp-for="SegundoApellido" class="form-control" />
+        <span asp-validation-for="SegundoApellido" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Identificacion" class="form-label"></label>
+        <input asp-for="Identificacion" class="form-control" />
+        <span asp-validation-for="Identificacion" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="CorreoElectronico" class="form-label"></label>
+        <input asp-for="CorreoElectronico" class="form-control" />
+        <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Estado" class="form-label">Estado</label>
+        <select asp-for="Estado" class="form-select">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+        </select>
+        <span asp-validation-for="Estado" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-warning">Guardar Cambios</button>
+    <a asp-action="Index" class="btn btn-secondary">Volver</a>
+
+</form>
