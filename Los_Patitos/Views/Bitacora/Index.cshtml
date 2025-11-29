@@ -3,86 +3,152 @@
     ViewData["Title"] = "Bitácora de eventos";
 }
 
-<h2 class="mb-3">@ViewData["Title"]</h2>
+<div class="py-6">
 
-<form method="get" class="row g-2 mb-3">
-    <div class="col-sm-3">
-        <input name="tabla" value="@ViewBag.Tabla" class="form-control" placeholder="Nombre Tabla" />
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
+        <p class="text-gray-600">Registro detallado de actividades, auditoría y errores del sistema.</p>
     </div>
 
-    @* Dropdown para filtrar la bitácora por tipo de evento *@
-    <div class="col-sm-2">
-        <select name="tipo" class="form-select">
-            <option value=""> Tipo </option>
-            <option value="Registrar" selected="@(ViewBag.Tipo == "Registrar")">Registrar</option>
-            <option value="Editar" selected="@(ViewBag.Tipo == "Editar")">Editar</option>
-            <option value="Eliminar" selected="@(ViewBag.Tipo == "Eliminar")">Eliminar</option>
-            <option value="Error" selected="@(ViewBag.Tipo == "Error")">Error</option>
-        </select>
-    </div>
-    <div class="col-sm-2">
-        <input type="date" name="fecha" value="@ViewBag.Fecha" class="form-control" />
-    </div>
-    <div class="col-sm-3">
-        <input name="q" value="@ViewBag.Q" class="form-control" placeholder="Buscar texto/Id en Descripción/JSON" />
-    </div>
-    <div class="col-sm-2">
-        <button class="btn btn-primary w-100">Filtrar</button>
-    </div>
-</form>
 
-<div class="table-responsive">
-    <table class="table table-sm table-striped align-middle">
-        <thead class="table-light">
-            <tr>
-                <th>IdEvento</th>
-                <th>TablaDeEvento</th>
-                <th>TipoDeEvento</th>
-                <th style="white-space: nowrap; min-width: 160px;">FechaDeEvento</th>
-                <th style="min-width:260px;">Descripción</th>
-                <th style="min-width:220px;">StackTrace</th>
-                <th style="min-width:260px;">DatosAnteriores</th>
-                <th style="min-width:260px;">DatosPosteriores</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var e in Model){
+    <!-- Card de filtros -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 mb-6">
+
+        <form method="get" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-6">
+
+            <!-- Tabla -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium text-gray-700 mb-1">Tabla</label>
+                <input name="tabla" value="@ViewBag.Tabla"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                      placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                       placeholder="Nombre Tabla" />
+            </div>
+
+            <!-- Tipo -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium text-gray-700 mb-1">Tipo de Evento</label>
+                <select name="tipo"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                       focus:ring-sky-500 focus:border-sky-500">
+                    <option value="">Todos</option>
+                    <option value="Registrar" selected="@(ViewBag.Tipo == "Registrar")">Registrar</option>
+                    <option value="Editar" selected="@(ViewBag.Tipo == "Editar")">Editar</option>
+                    <option value="Eliminar" selected="@(ViewBag.Tipo == "Eliminar")">Eliminar</option>
+                    <option value="Error" selected="@(ViewBag.Tipo == "Error")">Error</option>
+                </select>
+            </div>
+
+            <!-- Fecha -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium text-gray-700 mb-1">Fecha</label>
+                <input type="date" name="fecha" value="@ViewBag.Fecha"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                      focus:ring-sky-500 focus:border-sky-500" />
+            </div>
+
+            <!-- Buscar -->
+            <div class="flex flex-col">
+                <label class="text-sm font-medium text-gray-700 mb-1">Buscar</label>
+                <input name="q" value="@ViewBag.Q"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                      placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                       placeholder="Texto / ID / Descripción" />
+            </div>
+
+            <!-- Botón -->
+            <div class="flex items-end">
+                <button class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg py-2.5">
+                    Filtrar
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+
+
+    <!-- Tabla -->
+    <div class="overflow-x-auto bg-white border border-gray-200 shadow-sm rounded-lg">
+        <table class="min-w-full text-sm text-left text-gray-600">
+
+            <thead class="bg-sky-50 text-sky-700 text-xs uppercase font-medium border-b border-gray-200">
                 <tr>
-                    <td>@e.IdEvento</td>
-                    <td>@e.TablaDeEvento</td>
-                    <td>
-                        <span style="color:#d00000; font-weight:bold;">
-                            @e.TipoDeEvento
+                    <th class="px-4 py-3">Id</th>
+                    <th class="px-4 py-3">Tabla</th>
+                    <th class="px-4 py-3">Evento</th>
+                    <th class="px-4 py-3">Fecha</th>
+                    <th class="px-4 py-3">Descripción</th>
+                    <th class="px-4 py-3">StackTrace</th>
+                    <th class="px-4 py-3">Antes</th>
+                    <th class="px-4 py-3">Después</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @foreach (var e in Model)
+                {
+                    <tr class="border-b hover:bg-gray-50">
+
+                        <td class="px-4 py-3 font-medium text-gray-900">@e.IdEvento</td>
+
+                        <td class="px-4 py-3">@e.TablaDeEvento</td>
+
+                        <td class="px-4 py-3">
+                            <span class="
+                                    px-2 py-1 rounded-md text-xs font-bold
+                                    @(e.TipoDeEvento == "Registrar" ? "bg-green-100 text-green-700" :
+                                                                    e.TipoDeEvento == "Editar" ? "bg-blue-100 text-blue-700" :
+                                                                    e.TipoDeEvento == "Eliminar" ? "bg-red-100 text-red-700" :
+                                                                    "bg-yellow-100 text-yellow-800")">@e.TipoDeEvento
                         </span>
                     </td>
-                    <td>@e.FechaDeEvento.ToString("yyyy-MM-dd HH:mm:ss")</td>
-                    <td class="text-break">@e.DescripcionDeEvento</td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(e.StackTrace)){
-                            <details>
-                                <summary>ver</summary>
-                                <pre class="mb-0 small">@e.StackTrace</pre>
-                            </details>
-                        }
-                    </td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(e.DatosAnteriores)){
-                            <details>
-                                <summary>ver</summary>
-                                <pre class="mb-0 small">@e.DatosAnteriores</pre>
-                            </details>
-                        }
-                    </td>
-                    <td>
-                        @if (!string.IsNullOrEmpty(e.DatosPosteriores)){
-                            <details>
-                                <summary>ver</summary>
-                                <pre class="mb-0 small">@e.DatosPosteriores</pre>
-                            </details>
-                        }
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+
+                        <td class="px-4 py-3 whitespace-nowrap">
+                            @e.FechaDeEvento.ToString("yyyy-MM-dd HH:mm:ss")
+                        </td>
+
+                        <td class="px-4 py-3 max-w-[250px] text-wrap">
+                            @e.DescripcionDeEvento
+                        </td>
+
+                        <!-- StackTrace -->
+                        <td class="px-4 py-3">
+                        @if (!string.IsNullOrEmpty(e.StackTrace))
+                            {
+                                <details class="cursor-pointer">
+                                    <summary class="text-sky-600 hover:underline">ver</summary>
+                                    <pre class="text-xs bg-gray-100 p-2 rounded-lg whitespace-pre-wrap mt-1">@e.StackTrace</pre>
+                                </details>
+                            }</td>
+
+                        <!-- Datos Anteriores -->
+                        <td class="px-4 py-3">
+                            @if (!string.IsNullOrEmpty(e.DatosAnteriores))
+                            {
+                                <details class="cursor-pointer">
+                                    <summary class="text-sky-600 hover:underline">ver</summary>
+                                    <pre class="text-xs bg-gray-100 p-2 rounded-lg whitespace-pre-wrap mt-1">@e.DatosAnteriores</pre>
+                                </details>
+                            }</td>
+
+                        <!-- Datos Posteriores -->
+                        <td class="px-4 py-3">
+                            @if (!string.IsNullOrEmpty(e.DatosPosteriores))
+                            {
+                                <details class="cursor-pointer">
+                                    <summary class="text-sky-600 hover:underline">ver</summary>
+                                    <pre class="text-xs bg-gray-100 p-2 rounded-lg whitespace-pre-wrap mt-1">@e.DatosPosteriores</pre>
+                                </details>
+                            }
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+
+        </table>
+    </div>
+
 </div>

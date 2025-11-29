@@ -4,54 +4,108 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Los Patitos</title>
+
+    <!-- Bootstrap -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+
+    <!-- Site styles -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/Los_Patitos.styles.css" asp-append-version="true" />
+
+    <!-- Tailwind -->
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <!-- Flowbite -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
 </head>
-<body>
+
+<body class="bg-gray-50">
+    <!-- NAVBAR -->
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
-            <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Los Patitos</a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                        aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
-                    <ul class="navbar-nav flex-grow-1">
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-controller="Comercio" asp-action="Index">Comercios</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Sinpe" asp-action="Crear">SINPE Móvil</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Bitacora" asp-action="Index">Bitácora de Eventos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
-                        </li>
-                    </ul>
-                </div>
+        <nav class="navbar navbar-light bg-white border-bottom shadow-sm"
+             style="height: 58px; font-family: 'Segoe UI', sans-serif;">
+            <div class="container-fluid px-3 d-flex align-items-center justify-content-between">
+
+                <!-- Marca -->
+                <a class="navbar-brand fw-bold d-flex align-items-center"
+                   asp-area="" asp-controller="Home" asp-action="Index"
+                   style="font-size: 1.3rem; color: #0d6efd;">
+                    🦆 Los Patitos
+                </a>
+
+                <!-- Links bonitos -->
+                <ul class="nav" style="gap: 0.75rem;">
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           style="color: #374151; font-weight: 500; transition: 0.2s;"
+                           onmouseover="this.style.color='#0d6efd'"
+                           onmouseout="this.style.color='#374151'"
+                           asp-controller="Home" asp-action="Index">
+                            Inicio
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           style="color: #374151; font-weight: 500; transition: 0.2s;"
+                           onmouseover="this.style.color='#0d6efd'"
+                           onmouseout="this.style.color='#374151'"
+                           asp-controller="Comercio" asp-action="Index">
+                            Comercios
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           style="color: #374151; font-weight: 500; transition: 0.2s;"
+                           onmouseover="this.style.color='#0d6efd'"
+                           onmouseout="this.style.color='#374151'"
+                           asp-controller="Sinpe" asp-action="Crear">
+                            SINPE Móvil
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           style="color: #374151; font-weight: 500; transition: 0.2s;"
+                           onmouseover="this.style.color='#0d6efd'"
+                           onmouseout="this.style.color='#374151'"
+                           asp-controller="Bitacora" asp-action="Index">
+                            Bitácora
+                        </a>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link"
+                           style="color: #374151; font-weight: 500; transition: 0.2s;"
+                           onmouseover="this.style.color='#0d6efd'"
+                           onmouseout="this.style.color='#374151'"
+                           asp-controller="Home" asp-action="Privacy">
+                            Privacidad
+                        </a>
+                    </li>
+                </ul>
+
             </div>
         </nav>
     </header>
-    <div class="container">
-        <main role="main" class="pb-3">
+
+    <div class="container py-4">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
-        <div class="container">
-            &copy; 2025 - Los Patitos - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        <div class="container py-3">
+            &copy; 2025 - Los Patitos -
+            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
+
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
