@@ -50,5 +50,33 @@ namespace Los_Patitos.Repositories
         {
             return await _db.Usuario_G4.Where(u => u.IdComercio == idComercio).OrderBy(u => u.Nombres).ThenBy(u => u.PrimerApellido).ThenBy(u => u.SegundoApellido).ToListAsync();
         }
+
+
+        //Buscar usuario de comercio por correo
+        public async Task<UsuarioModel?> ObtenerPorCorreoAsync(string correo)
+        {
+            return await _db.Usuario_G4
+                .Include(u => u.Comercio)
+                .FirstOrDefaultAsync(u => u.CorreoElectronico == correo);
+        }
+
+        //Actualizar IdNetUser
+        public async Task ActualizarIdNetUserAsync(int idUsuario, string idNetUser)
+        {
+            var usuario = await _db.Usuario_G4.FirstOrDefaultAsync(u => u.IdUsuario == idUsuario);
+            if (usuario != null)
+            {
+                usuario.IdNetUser = idNetUser;
+                await _db.SaveChangesAsync();
+            }
+        }
+
+        //Buscar usuario de negocio por IdNetUser
+        public async Task<UsuarioModel?> ObtenerPorIdNetUserAsync(string idNetUser)
+        {
+            return await _db.Usuario_G4
+                .Include(u => u.Comercio)
+                .FirstOrDefaultAsync(u => u.IdNetUser == idNetUser);
+        }
     }
 }

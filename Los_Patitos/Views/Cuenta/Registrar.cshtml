@@ -1,0 +1,91 @@
+﻿@model Los_Patitos.Models.RegistroViewModel
+@{
+    ViewData["Title"] = "Registrar usuario";
+}
+
+<div class="py-6">
+
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
+        <p class="text-gray-600">
+            Registro de credenciales y rol de acceso al sistema.
+        </p>
+    </div>
+
+    <!-- Card de registro -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 mb-6 max-w-xl">
+
+        <form asp-action="Registrar" method="post" class="space-y-4">
+            @Html.AntiForgeryToken()
+
+            <!-- Resumen de validación -->
+            <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-2"></div>
+
+            <!-- Correo -->
+            <div class="flex flex-col">
+                <label asp-for="CorreoElectronico" class="text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="CorreoElectronico"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
+                <span asp-validation-for="CorreoElectronico" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Contraseña -->
+            <div class="flex flex-col">
+                <label asp-for="Contrasena" class="text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Contrasena" type="password"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
+                <span asp-validation-for="Contrasena" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Confirmar contraseña -->
+            <div class="flex flex-col">
+                <label asp-for="ConfirmarContrasena" class="text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="ConfirmarContrasena" type="password"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
+                <span asp-validation-for="ConfirmarContrasena" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Rol -->
+            <div class="flex flex-col">
+                <label asp-for="Rol" class="text-sm font-medium text-gray-700 mb-1"></label>
+                <select asp-for="Rol"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                               focus:ring-sky-500 focus:border-sky-500">
+                    <option value="">Seleccione...</option>
+                    <option value="Administrador">Administrador</option>
+                    <option value="Cajero">Cajero</option>
+                </select>
+                <span asp-validation-for="Rol" class="text-red-500 text-sm"></span>
+            </div>
+
+            <!-- Botón -->
+            <div class="flex gap-3">
+                <button type="submit"
+                        class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg py-2.5">
+                    Registrar
+                </button>
+            </div>
+
+            <!-- Link a login -->
+            <div class="mt-2 text-sm text-gray-600">
+                ¿Ya tiene una cuenta?
+                <a asp-controller="Cuenta" asp-action="IniciarSesion"
+                   class="text-sky-700 hover:underline font-medium">
+                    Iniciar sesión
+                </a>
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+

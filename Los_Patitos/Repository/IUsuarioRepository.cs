@@ -13,5 +13,9 @@ namespace Los_Patitos.Repositories
         Task<UsuarioModel?> ObtenerPorIdentificacionAsync(string identificacion); // Para validar duplicados
 
         Task<List<UsuarioModel>> ListarPorComercioAsync(int idComercio); // Lista usuarios por comercio
+
+        Task<UsuarioModel?> ObtenerPorCorreoAsync(string correo);
+        Task ActualizarIdNetUserAsync(int idUsuario, string idNetUser);
+        Task<UsuarioModel?> ObtenerPorIdNetUserAsync(string idNetUser);
     }
 }

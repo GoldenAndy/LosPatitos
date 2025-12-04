@@ -3,10 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Los_Patitos.Data
 {
-    public class AppDbContext : DbContext
+    public class AppDbContext : IdentityDbContext<UsuarioIdentity, RolIdentity, string>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options) { }
 
@@ -43,7 +44,7 @@ namespace Los_Patitos.Data
         private void TouchAuditFields()
         {
             var now = DateTime.Now;
-            foreach (var e in ChangeTracker.Entries<EntidadAuditable>())
+            foreach (var e in base.ChangeTracker.Entries<EntidadAuditable>())
             {
                 if (e.State == EntityState.Added)
                 {
@@ -62,7 +63,7 @@ namespace Los_Patitos.Data
             var now = DateTime.Now;
             var list = new List<BitacoraEvento>();
 
-            foreach (var entry in ChangeTracker.Entries()
+            foreach (var entry in base.ChangeTracker.Entries()
                      .Where(x => x.Entity is not BitacoraEvento &&
                                  x.State is EntityState.Added or EntityState.Modified))
             {
@@ -138,6 +139,8 @@ namespace Los_Patitos.Data
         // MODELOS y MAPEO 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            base.OnModelCreating(modelBuilder);
+
             // COMERCIO
             modelBuilder.Entity<Comercio>(e =>
             {
@@ -292,7 +295,6 @@ namespace Los_Patitos.Data
                 e.HasIndex(x => x.Identificacion).IsUnique();
             });
 
-            base.OnModelCreating(modelBuilder);
         }
 
         // SaveChanges para auditoría automática

@@ -15,5 +15,10 @@ namespace Los_Patitos.Business
 
         // usuario por Id (para el GET Editar)
         Task<UsuarioModel?> ObtenerPorIdAsync(int idUsuario);
+        Task<UsuarioModel?> ObtenerPorCorreoAsync(string correo);
+        Task ActualizarIdNetUserAsync(int idUsuario, string idNetUser);
+        Task<UsuarioModel?> ObtenerPorIdNetUserAsync(string idNetUser);
     }
+  
+        
 }

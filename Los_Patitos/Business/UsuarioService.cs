@@ -135,5 +135,17 @@ namespace Los_Patitos.Business
 
         private static bool EsCorreoValido(string email)
             => Regex.IsMatch(email, @"^[^@\s]+@[^@\s]+\.[^@\s]+$");
+
+        public Task<UsuarioModel?> ObtenerPorCorreoAsync(string correo)
+            => _usuarioRepo.ObtenerPorCorreoAsync(correo);
+
+        public Task ActualizarIdNetUserAsync(int idUsuario, string idNetUser)
+            => _usuarioRepo.ActualizarIdNetUserAsync(idUsuario, idNetUser);
+
+        public Task<UsuarioModel?> ObtenerPorIdNetUserAsync(string idNetUser)
+            => _usuarioRepo.ObtenerPorIdNetUserAsync(idNetUser);
+
+    
     }
+
 }
