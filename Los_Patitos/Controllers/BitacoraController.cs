@@ -1,10 +1,11 @@
 ﻿using Los_Patitos.Data;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-
+using Microsoft.AspNetCore.Authorization;
 
 namespace Los_Patitos.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class BitacoraController : Controller
     {
         private readonly AppDbContext _db;

@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using MySqlConnector;                 // Esto sirve para mitigar duplicados
 using Los_Patitos.Business;
 using Los_Patitos.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Los_Patitos.Controllers
 {
+    [Authorize(Roles = "Cajero,Administrador")]
     public class ComercioController : Controller
     {
         private readonly IComercioService _comercios;

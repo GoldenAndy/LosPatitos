@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using MySqlConnector;
 using Los_Patitos.Business;
 using Los_Patitos.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Los_Patitos.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class ConfiguracionComercioController : Controller
     {
         private readonly IConfiguracionComercioService _configs;

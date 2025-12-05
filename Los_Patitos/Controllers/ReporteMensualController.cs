@@ -2,10 +2,11 @@
 using Los_Patitos.Business;
 using Los_Patitos.Models;
 using OfficeOpenXml;
-using OfficeOpenXml.Style;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Los_Patitos.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class ReporteMensualController : Controller
     {
         private readonly IReporteMensualService _reportes;

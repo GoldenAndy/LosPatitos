@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Los_Patitos.Models;
+using Los_Patitos.Business;
 
 namespace Los_Patitos.Controllers
 {
@@ -9,13 +10,19 @@ namespace Los_Patitos.Controllers
     {
         private readonly UserManager<UsuarioIdentity> _userManager;
         private readonly SignInManager<UsuarioIdentity> _signInManager;
+        private readonly RoleManager<RolIdentity> _roleManager;
+        private readonly IUsuarioService _usuarioService;
 
         public CuentaController(
             UserManager<UsuarioIdentity> userManager,
-            SignInManager<UsuarioIdentity> signInManager)
+            SignInManager<UsuarioIdentity> signInManager,
+            RoleManager<RolIdentity> roleManager,
+            IUsuarioService usuarioService)
         {
             _userManager = userManager;
             _signInManager = signInManager;
+            _roleManager = roleManager;
+            _usuarioService = usuarioService;
         }
 
         // =======================
@@ -25,12 +32,7 @@ namespace Los_Patitos.Controllers
         [HttpGet]
         public IActionResult IniciarSesion(string? returnUrl = null)
         {
-            var modelo = new InicioSesionViewModel
-            {
-                ReturnUrl = returnUrl
-            };
-
-            return View(modelo);
+            return View(new InicioSesionViewModel { ReturnUrl = returnUrl });
         }
 
         [AllowAnonymous]
@@ -38,23 +40,16 @@ namespace Los_Patitos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> IniciarSesion(InicioSesionViewModel modelo)
         {
-            if (!ModelState.IsValid)
-                return View(modelo);
+            if (!ModelState.IsValid) return View(modelo);
 
-            var usuario = await _userManager.FindByEmailAsync(modelo.CorreoElectronico);
-            if (usuario == null)
-            {
-                ModelState.AddModelError(string.Empty, "Credenciales inválidas.");
-                return View(modelo);
-            }
+            // Puedes ir directo con el email como UserName (porque en Registro lo igualamos)
+            var result = await _signInManager.PasswordSignInAsync(
+                userName: modelo.CorreoElectronico,
+                password: modelo.Contrasena,
+                isPersistent: modelo.Recordarme,
+                lockoutOnFailure: true);
 
-            var resultado = await _signInManager.PasswordSignInAsync(
-                usuario,
-                modelo.Contrasena,
-                modelo.Recordarme,
-                lockoutOnFailure: false);
-
-            if (!resultado.Succeeded)
+            if (!result.Succeeded)
             {
                 ModelState.AddModelError(string.Empty, "Credenciales inválidas.");
                 return View(modelo);
@@ -63,7 +58,6 @@ namespace Los_Patitos.Controllers
             if (!string.IsNullOrEmpty(modelo.ReturnUrl) && Url.IsLocalUrl(modelo.ReturnUrl))
                 return Redirect(modelo.ReturnUrl);
 
-            // redirige al Home por defecto
             return RedirectToAction("Index", "Home");
         }
 
@@ -82,13 +76,11 @@ namespace Los_Patitos.Controllers
         // =======================
         //  REGISTRO
         // =======================
-
         [AllowAnonymous]
         [HttpGet]
         public IActionResult Registrar()
         {
-            // Solo devuelve la vista de registro
-            return View();
+            return View(new RegistroViewModel());
         }
 
         [AllowAnonymous]
@@ -96,29 +88,56 @@ namespace Los_Patitos.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Registrar(RegistroViewModel modelo)
         {
-            if (!ModelState.IsValid)
-                return View(modelo);
+            if (!ModelState.IsValid) return View(modelo);
 
-            var usuarioIdentity = new UsuarioIdentity
+            // Validación de rol permitido
+            if (!(modelo.Rol == "Administrador" || modelo.Rol == "Cajero"))
+            {
+                ModelState.AddModelError("Rol", "Rol inválido.");
+                return View(modelo);
+            }
+
+            // Regla del profesor: si es Cajero, debe existir previamente en Usuario_G4
+            UsuarioModel? usuarioNegocio = null;
+            if (modelo.Rol == "Cajero")
+            {
+                usuarioNegocio = await _usuarioService.ObtenerPorCorreoAsync(modelo.CorreoElectronico);
+                if (usuarioNegocio is null)
+                {
+                    ModelState.AddModelError(string.Empty,
+                        "Para registrar un Cajero primero debe existir en el sistema (Usuario_G4) con ese correo.");
+                    return View(modelo);
+                }
+            }
+
+            // Crear usuario Identity
+            var user = new UsuarioIdentity
             {
                 UserName = modelo.CorreoElectronico,
                 Email = modelo.CorreoElectronico
             };
 
-            var resultado = await _userManager.CreateAsync(usuarioIdentity, modelo.Contrasena);
-
-            if (!resultado.Succeeded)
+            var create = await _userManager.CreateAsync(user, modelo.Contrasena);
+            if (!create.Succeeded)
             {
-                foreach (var error in resultado.Errors)
-                    ModelState.AddModelError(string.Empty, error.Description);
-
+                foreach (var e in create.Errors)
+                    ModelState.AddModelError(string.Empty, e.Description);
                 return View(modelo);
             }
 
-            // Asignar rol (Administrador / Cajero)
-            await _userManager.AddToRoleAsync(usuarioIdentity, modelo.Rol);
+            // Asegura que el rol exista y asigna
+            if (!await _roleManager.RoleExistsAsync(modelo.Rol))
+                await _roleManager.CreateAsync(new RolIdentity { Name = modelo.Rol });
 
-            TempData["Ok"] = "Usuario registrado correctamente. Ahora puede iniciar sesión.";
+            await _userManager.AddToRoleAsync(user, modelo.Rol);
+
+            // Si es Cajero: enlaza IdNetUser en Usuario_G4
+            if (modelo.Rol == "Cajero" && usuarioNegocio != null)
+            {
+                await _usuarioService.ActualizarIdNetUserAsync(usuarioNegocio.IdUsuario, user.Id);
+            }
+
+            TempData["Ok"] = "Usuario registrado correctamente. Ya puede iniciar sesión.";
             return RedirectToAction(nameof(IniciarSesion));
         }
 
@@ -126,9 +145,6 @@ namespace Los_Patitos.Controllers
         //  ACCESO DENEGADO
         // =======================
         [HttpGet]
-        public IActionResult AccesoDenegado()
-        {
-            return View();
-        }
+        public IActionResult AccesoDenegado() => View();
     }
 }

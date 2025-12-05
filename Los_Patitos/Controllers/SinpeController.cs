@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using Los_Patitos.Business;
 using Los_Patitos.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Los_Patitos.Controllers
 {
+    [Authorize(Roles = "Administrador")]
     public class SinpeController : Controller
     {
         private readonly ISinpeService _sinpeService;

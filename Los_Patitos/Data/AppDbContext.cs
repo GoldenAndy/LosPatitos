@@ -141,6 +141,31 @@ namespace Los_Patitos.Data
         {
             base.OnModelCreating(modelBuilder);
 
+
+            // ===== Identity extra mapping =====
+
+            // A) Columna adicional en AspNetUsers (IdUsuario nullable)
+            modelBuilder.Entity<UsuarioIdentity>(e =>
+            {
+                e.Property(u => u.IdUsuario)
+                 .HasColumnType("int")
+                 .IsRequired(false);
+            });
+
+            // B) Enlace desde tu tabla de negocio al Id de Identity
+            //    ¡OJO con la longitud! El Id de Identity en MySQL suele ser VARCHAR(255)
+            //    (36 puede quedarse corto si cambias el tipo o el provider).
+            modelBuilder.Entity<UsuarioModel>(e =>
+            {
+                e.Property(u => u.IdNetUser)
+                 .HasMaxLength(255)     // <-- CAMBIA tu 36 a 255
+                 .IsRequired(false);
+
+                // Opcional pero recomendado: correo único en tu tabla de negocio
+                e.HasIndex(u => u.CorreoElectronico).IsUnique();
+            });
+
+
             // COMERCIO
             modelBuilder.Entity<Comercio>(e =>
             {
@@ -286,8 +311,8 @@ namespace Los_Patitos.Data
                 e.Property(x => x.FechaDeModificacion).IsRequired(false);  
 
                 e.Property(x => x.Estado).IsRequired();
-                
-                e.Property(x => x.IdNetUser).HasMaxLength(36).IsRequired(false);
+
+                e.Property(x => x.IdNetUser).HasMaxLength(255).IsRequired(false);
 
                 //FK con Comercio
                 e.HasOne(x => x.Comercio).WithMany().HasForeignKey(x => x.IdComercio).OnDelete(DeleteBehavior.Restrict);

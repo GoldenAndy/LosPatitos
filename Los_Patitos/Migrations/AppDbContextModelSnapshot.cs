@@ -482,6 +482,9 @@ namespace Los_Patitos.Migrations
 
                     b.HasKey("IdUsuario");
 
+                    b.HasIndex("CorreoElectronico")
+                        .IsUnique();
+
                     b.HasIndex("IdComercio");
 
                     b.HasIndex("Identificacion")

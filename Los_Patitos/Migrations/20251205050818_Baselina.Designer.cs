@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Los_Patitos.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20251130004008_IdentityInicial")]
-    partial class IdentityInicial
+    [Migration("20251205050818_Baselina")]
+    partial class Baselina
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -484,6 +484,9 @@ namespace Los_Patitos.Migrations
                         .HasColumnType("varchar(100)");
 
                     b.HasKey("IdUsuario");
+
+                    b.HasIndex("CorreoElectronico")
+                        .IsUnique();
 
                     b.HasIndex("IdComercio");
 

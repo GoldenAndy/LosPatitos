@@ -8,15 +8,14 @@
         <h1 class="text-2xl font-bold text-sky-700 mb-2">Iniciar sesión</h1>
         <p class="text-gray-600 mb-6">Acceda al panel de administración de Los Patitos.</p>
 
-        @if (ViewData.ModelState.ErrorCount > 0)
+        @if (TempData["Ok"] is string okMsg)
         {
-            <div class="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2">
-                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-                {
-                    <div>@error.ErrorMessage</div>
-                }
+            <div class="mb-4 text-sm text-green-800 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+                @okMsg
             </div>
         }
+
+        <div asp-validation-summary="ModelOnly" class="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2"></div>
 
         <form asp-action="IniciarSesion" method="post" class="space-y-4">
             @Html.AntiForgeryToken()
@@ -25,19 +24,13 @@
 
             <div>
                 <label asp-for="CorreoElectronico" class="block text-sm font-medium text-gray-700 mb-1"></label>
-                <input asp-for="CorreoElectronico"
-                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
-                              focus:ring-sky-500 focus:border-sky-500"
-                       placeholder="correo@ejemplo.com" />
+                <input asp-for="CorreoElectronico" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:ring-sky-500 focus:border-sky-500" placeholder="correo@ejemplo.com" />
                 <span asp-validation-for="CorreoElectronico" class="text-sm text-red-600"></span>
             </div>
 
             <div>
                 <label asp-for="Contrasena" class="block text-sm font-medium text-gray-700 mb-1"></label>
-                <input asp-for="Contrasena" type="password"
-                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
-                              focus:ring-sky-500 focus:border-sky-500"
-                       placeholder="••••••••" />
+                <input asp-for="Contrasena" type="password" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:ring-sky-500 focus:border-sky-500" placeholder="••••••••" />
                 <span asp-validation-for="Contrasena" class="text-sm text-red-600"></span>
             </div>
 
@@ -48,19 +41,19 @@
                 </label>
             </div>
 
-            <button type="submit"
-                    class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg py-2.5">
+            <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg py-2.5">
                 Iniciar sesión
             </button>
         </form>
 
-        <!-- 🔹 Botón / link para registrar usuario -->
         <div class="mt-6 text-center">
-            <a asp-controller="Cuenta" asp-action="Registrar"
-               class="text-sky-600 hover:text-sky-700 font-medium">
+            <a asp-controller="Cuenta" asp-action="Registrar" class="text-sky-600 hover:text-sky-700 font-medium">
                 ¿No tiene una cuenta? Registrar usuario
             </a>
         </div>
-
     </div>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
