@@ -19,7 +19,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/flowbite/2.3.0/flowbite.min.css" rel="stylesheet" />
 </head>
 
-<body class="bg-gray-50">
+<body class="bg-gray-50 d-flex flex-column min-vh-100">
     <!-- NAVBAR -->
     <header>
         <nav class="navbar navbar-light bg-white border-bottom shadow-sm"
@@ -89,16 +89,14 @@
         </nav>
     </header>
 
-    <div class="container py-4">
-        <main role="main">
-            @RenderBody()
-        </main>
-    </div>
+    <main class="container py-4 flex-grow-1 mb-5">
+        @RenderBody()
+    </main>
 
-    <footer class="border-top footer text-muted">
-        <div class="py-3 px-4">
+    <footer class="footer text-gray-600 bg-gray-50 mt-auto py-3 border-top">
+        <div class="container px-4">
             &copy; 2025 - Los Patitos -
-            <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+            <a asp-area="" asp-controller="Home" asp-action="Privacy" class="text-sky-600 hover:text-sky-700">Privacy</a>
         </div>
     </footer>
 
