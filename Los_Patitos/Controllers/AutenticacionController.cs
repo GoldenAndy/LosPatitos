@@ -1,10 +1,11 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
-using Los_Patitos.Business;
+﻿using Los_Patitos.Business;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Los_Patitos.Controllers
 {
@@ -48,15 +49,12 @@ namespace Los_Patitos.Controllers
                 return Unauthorized(new AuthResponse(false, "Comercio no existe.", null, null));
             }
 
-            // 2) Configuración del comercio: debe ser Externa o Ambas
+            // 2) Configuración del comercio: debe ser Externa (2) o Ambas (3) y estar Activa
             var cfgCom = _config.ObtenerPorComercio(req.IdComercio);
-            if (cfgCom is null)
-                return Unauthorized(new AuthResponse(false, "Sin configuración registrada para el comercio.", null, null));
+            if (cfgCom is null || !cfgCom.Estado)
+                return Unauthorized(new AuthResponse(false, "Configuración inexistente o inactiva.", null, null));
 
-            // Ajusta estos valores a los que usen ustedes en BD:
-            // Ejemplo común: 0=Interna, 1=Externa, 2=Ambas
-            bool PermiteExterna(int tipo) => tipo == 1 || tipo == 2;
-
+            bool PermiteExterna(int tipo) => tipo == 2 || tipo == 3; // Externa o Ambas
             if (!PermiteExterna(cfgCom.TipoConfiguracion))
                 return Unauthorized(new AuthResponse(false, "Comercio no autorizado para API externa.", null, null));
 
@@ -68,10 +66,10 @@ namespace Los_Patitos.Controllers
 
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, req.IdComercio.ToString()),
-                new Claim("idComercio", req.IdComercio.ToString()),
-                new Claim("scope", "sinpe.api")
-            };
+        new Claim(JwtRegisteredClaimNames.Sub, req.IdComercio.ToString()),
+        new Claim("idComercio", req.IdComercio.ToString()),
+        new Claim("scope", "sinpe.api")
+    };
 
             var exp = DateTime.UtcNow.AddHours(1);
 
@@ -84,7 +82,21 @@ namespace Los_Patitos.Controllers
             );
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwt);
-            return Ok(new AuthResponse(true, "OK", token, jwt.ValidTo));
+            return Ok(new AuthResponse(true, "Token emitido.", token, jwt.ValidTo));
         }
+
+
+        // 1) Ping público (sin token) para verificar la ruta
+        [HttpGet("ping")]
+        [AllowAnonymous]
+        public IActionResult Ping() => Ok("pong");
+
+        // 2) Ping protegido para probar el Bearer token
+        [HttpGet("secure-ping")]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme)]
+        public IActionResult SecurePing() => Ok(new { ok = true, msg = "pong seguro" });
+
+
+
     }
 }

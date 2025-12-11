@@ -1,0 +1,52 @@
+﻿@using Microsoft.AspNetCore.Identity
+@using Los_Patitos.Models
+@inject SignInManager<UsuarioIdentity> SignInManager
+@inject UserManager<UsuarioIdentity> UserManager
+
+@{
+    var email = User?.Identity?.Name ?? "";
+    var inicial = string.IsNullOrWhiteSpace(email) ? "?" : email.Substring(0, 1).ToUpperInvariant();
+}
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <div class="dropdown">
+        <button class="btn d-flex align-items-center gap-2 dropdown-toggle"
+                type="button"
+                id="userMenuBtn"
+                data-bs-toggle="dropdown"
+                aria-expanded="false">
+            <span class="rounded-circle bg-primary text-white d-inline-flex justify-content-center align-items-center"
+                  style="width:36px;height:36px;font-weight:700;">
+                @inicial
+            </span>
+            <span class="d-none d-md-inline">@email</span>
+        </button>
+
+        <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userMenuBtn" style="z-index:2000;">
+            <li class="dropdown-item-text small text-muted">Conectado como</li>
+            <li class="dropdown-item-text text-truncate">@email</li>
+            <li><hr class="dropdown-divider" /></li>
+            <li>
+                <a class="dropdown-item" asp-controller="Home" asp-action="Index">Inicio</a>
+            </li>
+            <li>
+                <form asp-controller="Cuenta" asp-action="CerrarSesion" method="post" class="px-3 m-0">
+                    @Html.AntiForgeryToken()
+                    <button type="submit" class="btn btn-link p-0 text-danger">Cerrar sesión</button>
+                </form>
+            </li>
+        </ul>
+    </div>
+}
+else
+{
+    <div class="d-flex align-items-center gap-2">
+        <a asp-controller="Cuenta" asp-action="IniciarSesion" class="btn btn-outline-primary btn-sm">
+            Iniciar sesión
+        </a>
+        <a asp-controller="Cuenta" asp-action="Registrar" class="btn btn-primary btn-sm">
+            Crear cuenta
+        </a>
+    </div>
+}
