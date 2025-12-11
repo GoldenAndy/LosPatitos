@@ -8,6 +8,9 @@ namespace Los_Patitos.Models
 
         [Required(ErrorMessage = "La identificación es obligatoria.")]
         [StringLength(30, ErrorMessage = "La identificación no debe exceder 30 caracteres.")]
+        [RegularExpression(
+            @"^[0-9]{1}-[0-9]{3,4}-[0-9]{6}$",
+            ErrorMessage = "El formato debe ser: 3-101-000000")]
         public string Identificacion { get; set; } = string.Empty;
 
         [Range(1, 2, ErrorMessage = "Seleccione un tipo de identificación válido.")]

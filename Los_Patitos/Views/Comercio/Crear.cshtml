@@ -12,7 +12,8 @@
 
     <div class="mb-3">
         <label class="form-label">Identificación</label>
-        <input asp-for="Identificacion" class="form-control" />
+        <input asp-for="Identificacion" class="form-control" pattern="[0-9]{1}-[0-9]{3,4}-[0-9]{6}" />
+
         <span asp-validation-for="Identificacion" class="text-danger"></span>
     </div>
 

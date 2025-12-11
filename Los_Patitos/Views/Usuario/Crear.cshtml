@@ -44,7 +44,7 @@
 
     <div class="mb-3">
         <label asp-for="Identificacion" class="form-label"></label>
-        <input asp-for="Identificacion" class="form-control" />
+        <input asp-for="Identificacion" class="form-control" pattern="[0-9]{9}" maxlength="9" placeholder="100100100" />
         <span asp-validation-for="Identificacion" class="text-danger"></span>
     </div>
 

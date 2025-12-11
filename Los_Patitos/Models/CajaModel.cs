@@ -1,17 +1,35 @@
 ﻿
+using System.ComponentModel.DataAnnotations;
+
 namespace Los_Patitos.Models
 {
     public class CajaModel : EntidadAuditable //CajaModel hereda campos de auditoría (CreatedAt, ModifiedAt) de EntidadAuditable
     {
         public int IdCaja { get; set; }
 
+        [Required(ErrorMessage = "El comercio asociado es obligatorio.")]
+        [Range(1, int.MaxValue, ErrorMessage = "Seleccione un comercio válido.")]
         public int IdComercio { get; set; }
+
+        [Required(ErrorMessage = "El comercio asociado es obligatorio.")]
         public Comercio Comercio { get; set; }
 
+        [Required(ErrorMessage = "El nombre de la caja es obligatorio.")]
+        [StringLength(100, ErrorMessage = "El nombre no debe exceder 100 caracteres.")]
+        [RegularExpression(
+            @"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ0-9\s]{2,100}$",
+            ErrorMessage = "El nombre solo puede contener letras, números y espacios.")]
         public string Nombre { get; set; }
 
+        [Required(ErrorMessage = "La descripción es obligatoria.")]
+        [StringLength(150, ErrorMessage = "La descripción no debe exceder 150 caracteres.")]
         public string Descripcion { get; set; }
 
+        [Required(ErrorMessage = "El teléfono SINPE es obligatorio.")]
+        [StringLength(10, ErrorMessage = "El teléfono SINPE no debe exceder 10 caracteres.")]
+        [RegularExpression(
+            @"^[0-9]{8}$",
+            ErrorMessage = "El teléfono SINPE debe contener exactamente 8 dígitos.")]
         public string TelefonoSINPE { get; set; }
 
         public DateTime FechaDeRegistro { get; set; }

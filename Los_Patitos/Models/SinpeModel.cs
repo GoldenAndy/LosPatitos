@@ -1,6 +1,7 @@
 ﻿
 
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.ComponentModel.DataAnnotations;
 
 namespace Los_Patitos.Models
 {
@@ -8,24 +9,49 @@ namespace Los_Patitos.Models
     {
         public int IdSinpe { get; set; }
 
+        [Required(ErrorMessage = "El teléfono de origen es obligatorio.")]
+        [StringLength(10, ErrorMessage = "El teléfono de origen no debe exceder 10 caracteres.")]
+        [RegularExpression(@"^[0-9]{8}$",
+            ErrorMessage = "El teléfono de origen debe contener exactamente 8 dígitos.")]
         public string TelefonoOrigen { get; set; }
 
+        [Required(ErrorMessage = "El nombre de origen es obligatorio.")]
+        [StringLength(200, ErrorMessage = "El nombre de origen no debe exceder 200 caracteres.")]
+        [RegularExpression(
+            @"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]{2,200}$",
+            ErrorMessage = "El nombre de origen solo puede contener letras y espacios.")]
         public string NombreOrigen { get; set; }
 
+        [Required(ErrorMessage = "El teléfono destino es obligatorio.")]
+        [StringLength(10, ErrorMessage = "El teléfono destino no debe exceder 10 caracteres.")]
+        [RegularExpression(@"^[0-9]{8}$",
+            ErrorMessage = "El teléfono destino debe contener exactamente 8 dígitos.")]
         public string TelefonoDestinaria { get; set; }
 
+        [Required(ErrorMessage = "El nombre del receptor es obligatorio.")]
+        [StringLength(200, ErrorMessage = "El nombre del receptor no debe exceder 200 caracteres.")]
+        [RegularExpression(
+            @"^[A-Za-zÁÉÍÓÚÜÑáéíóúüñ\s]{2,200}$",
+            ErrorMessage = "El nombre del receptor solo puede contener letras y espacios.")]
         public string NombreDestinaria { get; set; }
 
+        [Required(ErrorMessage = "El monto es obligatorio.")]
+        [Range(0.01, 999999999999999.99, ErrorMessage = "El monto debe ser mayor a 0.")]
+        [DataType(DataType.Currency)]
         public decimal Monto { get; set; }
         public DateTime FechaDeRegistro { get; set; } = DateTime.Now;
 
+        [StringLength(50, ErrorMessage = "La descripción no debe exceder 50 caracteres.")]
         public string? Descripcion { get; set; }
         public bool Estado { get; set; } = false;
 
 
 
         // Relación con la caja que recibió el SINPE
+        [Required(ErrorMessage = "La caja asociada es obligatoria.")]
         public int IdCaja { get; set; }
+
+        [Required(ErrorMessage = "La caja asociada es obligatoria.")]
         public CajaModel Caja { get; set; }
     }
 }
