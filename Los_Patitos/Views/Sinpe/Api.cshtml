@@ -1,0 +1,330 @@
+﻿@{
+    ViewData["Title"] = "Transacción SINPE Móvil (API)";
+}
+
+<div class="py-6">
+
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700 flex items-center gap-3">
+            <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
+            </svg>
+            @ViewData["Title"]
+        </h1>
+        <p class="text-gray-600 mt-2">
+            Esta pantalla consume el <strong>API SINPE</strong> para registrar y consultar transacciones
+            desde sistemas externos.
+        </p>
+    </div>
+
+    <!-- Alertas dinámicas -->
+    <div id="alertContainer" class="hidden mb-6"></div>
+
+    <!-- REGISTRAR SINPE (POST /api/sinpe/recibir) -->
+    <form id="sinpeApiForm"
+          class="bg-white border border-gray-200 shadow-sm rounded-lg p-6 mb-8">
+
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+            Registrar SINPE vía API
+        </h2>
+
+        <!-- Datos de Origen -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-sky-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                </svg>
+                Datos de Origen
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Teléfono Origen
+                    </label>
+                    <input id="TelefonoOrigen"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                           placeholder="Ej. 85201234" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Nombre Origen
+                    </label>
+                    <input id="NombreOrigen"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                           placeholder="Ej. María Pérez" />
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-200 my-6"></div>
+
+        <!-- Datos de Destino -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                </svg>
+                Datos de Destino (Caja)
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Teléfono Destino (Caja)
+                    </label>
+                    <input id="TelefonoDestinatario"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                           placeholder="Ej. 88887777" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Nombre Destino
+                    </label>
+                    <input id="NombreDestinatario"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                           placeholder="Ej. Caja Pepito" />
+                </div>
+            </div>
+        </div>
+
+        <div class="border-t border-gray-200 my-6"></div>
+
+        <!-- Datos de Transacción -->
+        <div class="mb-6">
+            <h3 class="text-lg font-semibold text-gray-700 mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                Datos de Transacción
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Monto (₡)
+                    </label>
+                    <input id="Monto"
+                           type="number" step="0.01" min="0.01"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                           placeholder="Ej. 5000.00" />
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">
+                        Descripción <span class="text-gray-400 font-normal">(opcional)</span>
+                    </label>
+                    <input id="Descripcion"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                           placeholder="Ej. Compra de accesorios" />
+                </div>
+            </div>
+        </div>
+
+        <!-- Botones de acción -->
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-3 mt-8 pt-6 border-t border-gray-200">
+            <a asp-controller="Home" asp-action="Index"
+               class="w-full sm:w-auto bg-white hover:bg-gray-50 text-gray-700 font-medium px-6 py-2.5 rounded-lg border border-gray-300 transition-colors inline-flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Volver
+            </a>
+
+            <button type="submit"
+                    class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors inline-flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                </svg>
+                Enviar al API (Recibir SINPE)
+            </button>
+        </div>
+
+    </form>
+
+    <!-- CONSULTAR SINPE (GET /api/sinpe?telefonoCaja=) -->
+    <div class="bg-white border border-gray-200 shadow-sm rounded-lg p-6">
+        <h2 class="text-xl font-semibold text-gray-800 mb-4">
+            Consultar SINPE por teléfono de caja
+        </h2>
+
+        <div class="flex flex-col md:flex-row gap-3 mb-4">
+            <input id="TelefonoCajaConsulta"
+                   class="w-full md:w-64 rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                          placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                   placeholder="Teléfono de la caja (Ej. 89652314)" />
+            <button id="btnConsultarSinpe"
+                    class="w-full md:w-auto bg-sky-600 hover:bg-sky-700 text-white font-medium px-6 py-2.5 rounded-lg transition-colors inline-flex items-center justify-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M8 4h13M8 9h13M8 14h13M8 19h13M3 4h.01M3 9h.01M3 14h.01M3 19h.01" />
+                </svg>
+                Consultar SINPE
+            </button>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200 text-sm">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">IdSinpe</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Tel. Origen</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Nombre Origen</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Tel. Destino</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Nombre Destino</th>
+                        <th class="px-3 py-2 text-right font-semibold text-gray-700">Monto</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Descripción</th>
+                        <th class="px-3 py-2 text-left font-semibold text-gray-700">Fecha</th>
+                        <th class="px-3 py-2 text-center font-semibold text-gray-700">Estado</th>
+                    </tr>
+                </thead>
+                <tbody id="sinpeTableBody" class="divide-y divide-gray-200">
+                </tbody>
+            </table>
+        </div>
+
+        <p id="sinpeEmptyMessage" class="text-gray-500 text-sm mt-3 hidden">
+            No se encontraron transacciones SINPE para ese teléfono de caja.
+        </p>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script>
+        (function () {
+            const form = document.getElementById('sinpeApiForm');
+            const alertContainer = document.getElementById('alertContainer');
+
+            const telefonoCajaInput = document.getElementById('TelefonoCajaConsulta');
+            const btnConsultar = document.getElementById('btnConsultarSinpe');
+            const tableBody = document.getElementById('sinpeTableBody');
+            const emptyMessage = document.getElementById('sinpeEmptyMessage');
+
+            //Puerto del API
+            const apiBaseUrl = 'https://localhost:7271';
+
+            function showAlert(success, message) {
+                alertContainer.classList.remove('hidden');
+                alertContainer.innerHTML = `
+                    <div class="px-4 py-3 rounded-lg flex items-center ${success
+                        ? 'bg-green-50 border border-green-200 text-green-800'
+                        : 'bg-red-50 border border-red-200 text-red-800'}">
+                        <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            ${success
+                                ? '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />'
+                                : '<path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />'}
+                        </svg>
+                        <span>${message}</span>
+                    </div>`;
+            }
+
+            // Registrar SINPE (POST /api/sinpe/recibir) 
+            form.addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const payload = {
+                    telefonoOrigen: document.getElementById('TelefonoOrigen').value,
+                    nombreOrigen: document.getElementById('NombreOrigen').value,
+                    telefonoDestinatario: document.getElementById('TelefonoDestinatario').value,
+                    nombreDestinatario: document.getElementById('NombreDestinatario').value,
+                    monto: parseFloat(document.getElementById('Monto').value || '0'),
+                    descripcion: document.getElementById('Descripcion').value
+                };
+
+                try {
+                    const response = await fetch(`${apiBaseUrl}/api/sinpe/recibir`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        showAlert(false, result.mensaje || 'Error al consumir el API.');
+                        return;
+                    }
+
+                    showAlert(result.esValido, result.mensaje);
+
+                } catch (err) {
+                    console.error(err);
+                    showAlert(false, 'Error de conexión con el API.');
+                }
+            });
+
+            //  Consultar SINPE (GET /api/sinpe?telefonoCaja=)  
+            btnConsultar.addEventListener('click', async function () {
+                const tel = telefonoCajaInput.value.trim();
+
+                if (!tel) {
+                    showAlert(false, 'Debe ingresar el teléfono de la caja.');
+                    return;
+                }
+
+                try {
+                    const url = `${apiBaseUrl}/api/sinpe?telefonoCaja=${encodeURIComponent(tel)}`;
+                    const response = await fetch(url);
+
+                    if (!response.ok) {
+                        showAlert(false, 'Error al consultar el API.');
+                        return;
+                    }
+
+                    const data = await response.json(); //arreglo del sinpe
+
+                    //Limpiar tabla
+                    tableBody.innerHTML = '';
+
+                    if (!data || data.length === 0) {
+                        emptyMessage.classList.remove('hidden');
+                        return;
+                    }
+
+                    emptyMessage.classList.add('hidden');
+
+                    data.forEach(item => {
+                        const tr = document.createElement('tr');
+
+                        const fecha = new Date(item.fecha).toLocaleString('es-CR');
+
+                        tr.innerHTML = `
+                            <td class="px-3 py-2 whitespace-nowrap">${item.idSinpe}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">${item.telefonoOrigen}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">${item.nombreOrigen}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">${item.telefonoDestinatario}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">${item.nombreDestinatario}</td>
+                            <td class="px-3 py-2 text-right whitespace-nowrap">₡${item.monto.toFixed(2)}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">${item.descripcion ?? ''}</td>
+                            <td class="px-3 py-2 whitespace-nowrap">${fecha}</td>
+                            <td class="px-3 py-2 text-center whitespace-nowrap">
+                                <span class="inline-flex px-2 py-0.5 rounded-full text-xs font-semibold ${item.estado
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-yellow-100 text-yellow-800'}">
+                                    ${item.estado ? 'Sincronizado' : 'No sincronizado'}
+                                </span>
+                            </td>
+                        `;
+                        tableBody.appendChild(tr);
+                    });
+
+                } catch (err) {
+                    console.error(err);
+                    showAlert(false, 'Error de conexión con el API.');
+                }
+            });
+        })();
+    </script>
+}

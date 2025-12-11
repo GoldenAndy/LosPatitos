@@ -46,5 +46,11 @@ namespace Los_Patitos.Controllers
             TempData["Ok"] = $"SINPE registrado con el Id #{id}.";
             return RedirectToAction(nameof(Crear));
         }
+
+        // GET /Sinpe/Api
+        public IActionResult Api()
+        {
+            return View(); //Views/Sinpe/Api
+        }
     }
 }

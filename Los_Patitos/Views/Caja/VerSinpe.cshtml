@@ -113,15 +113,13 @@
                             <p>@(!string.IsNullOrWhiteSpace(sinpe.Descripcion) ? sinpe.Descripcion : "Sin descripción")</p>
                         </div>
 
-                        @if (!sinpe.Estado) //Sincronizar Sinpe
+                        @if (!sinpe.Estado) //Sincronizar SINPE vía API
                         {
-                            <a asp-controller="Caja"
-                               asp-action="Sincronizar"
-                               asp-route-idSinpe="@sinpe.IdSinpe"
-                               asp-route-idCaja="@caja.IdCaja"
-                               class="btn btn-warning mt-2 fw-bold">
+                            <button type="button"
+                                    class="btn btn-warning mt-2 fw-bold js-sincronizar-sinpe"
+                                    data-id-sinpe="@sinpe.IdSinpe">
                                 <i class="bi bi-arrow-repeat"></i> Sincronizar
-                            </a>
+                            </button>
                         }
 
 
@@ -140,3 +138,68 @@
 
 
 </div>
+@section Scripts {
+    <script>
+        (function () {
+            const apiBaseUrl = 'https://localhost:7271';
+
+            const buttons = document.querySelectorAll('.js-sincronizar-sinpe');
+
+            buttons.forEach(btn => {
+                btn.addEventListener('click', async function () {
+                    const idSinpe = this.dataset.idSinpe;
+                    if (!idSinpe) return;
+
+                    if (!confirm(`¿Desea sincronizar el SINPE #${idSinpe}?`)) {
+                        return;
+                    }
+
+                    const button = this;
+                    const originalHtml = button.innerHTML;
+                    button.disabled = true;
+                    button.innerHTML =
+                        '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Sincronizando...';
+
+                    try {
+                        const response = await fetch(`${apiBaseUrl}/api/sinpe/sincronizar`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ idSinpe: parseInt(idSinpe) })
+                        });
+
+                        const result = await response.json();
+
+                        if (!response.ok || !result.esValido) {
+                            alert(result.mensaje || 'No fue posible sincronizar el SINPE.');
+                            button.disabled = false;
+                            button.innerHTML = originalHtml;
+                            return;
+                        }
+
+                        //Actualizar el card
+                        const card = button.closest('.border.rounded');
+                        if (card) {
+                            const badge = card.querySelector('.badge');
+                            if (badge) {
+                                badge.classList.remove('bg-warning', 'text-dark');
+                                badge.classList.add('bg-success');
+                                badge.textContent = 'Sincronizado';
+                            }
+                        }
+
+                        button.classList.remove('btn-warning');
+                        button.classList.add('btn-success');
+                        button.innerHTML = '<i class="bi bi-check2-circle"></i> Sincronizado';
+                    } catch (err) {
+                        console.error(err);
+                        alert('Error de conexión con el API.');
+                        button.disabled = false;
+                        button.innerHTML = originalHtml;
+                    }
+                });
+            });
+        })();
+    </script>
+}

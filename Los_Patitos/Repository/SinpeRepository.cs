@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Los_Patitos.Data;
 using Los_Patitos.Models;
 using Microsoft.EntityFrameworkCore;
@@ -17,17 +19,14 @@ namespace Los_Patitos.Repositories
             return nuevo.IdSinpe;
         }
 
-
         public async Task<List<SinpeModel>> ListarPorCajaAsync(int idCaja)
         {
             return await _db.Sinpe_G4
                 .Include(s => s.Caja)
                 .Where(s => s.IdCaja == idCaja)
                 .OrderByDescending(s => s.FechaDeRegistro)
-                .Include(s => s.Caja)
                 .ToListAsync();
         }
-
 
         public async Task<List<SinpeModel>> ListarPorCajasYMesAsync(
             IEnumerable<int> idsCajas,
@@ -45,8 +44,7 @@ namespace Los_Patitos.Repositories
                 .ToListAsync();
         }
 
-
-        //Sincronizar Sinpe
+        // Sincronizar Sinpe
         public async Task<bool> SincronizarAsync(int idSinpe)
         {
             var sinpe = await _db.Sinpe_G4.FindAsync(idSinpe);
@@ -57,9 +55,5 @@ namespace Los_Patitos.Repositories
             await _db.SaveChangesAsync();
             return true;
         }
-
-
-
     }
 }
-

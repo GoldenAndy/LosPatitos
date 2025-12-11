@@ -54,6 +54,20 @@ namespace Los_Patitos.Business
         public Task<List<SinpeModel>> ListarPorCajaAsync(int idCaja)
             => _sinpeRepo.ListarPorCajaAsync(idCaja);
 
+        public async Task<List<SinpeModel>> ListarPorTelefonoCajaAsync(string telefonoCaja)
+        {
+            //BUscar la caja por el numero de telefono
+            var caja = await _cajaRepo.ObtenerPorTelefonoAsync(telefonoCaja);
+            if (caja is null)
+            {
+                //Si no hay ninguna caja con ese numero, devuelve lista vacia
+                return new List<SinpeModel>();
+            }
+
+            //Se reutiliza buscar por id
+            return await _sinpeRepo.ListarPorCajaAsync(caja.IdCaja);
+        }
+
         private static bool EsTelefonoValido(string tel)
             => Regex.IsMatch(tel, @"^\d{8}$");
 
