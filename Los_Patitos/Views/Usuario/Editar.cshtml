@@ -4,63 +4,123 @@
     ViewData["Title"] = "Editar Usuario";
 }
 
-<h2 class="mb-3">Editar Usuario</h2>
+<div class="py-6">
 
-@if (ViewBag.Error != null)
-{
-    <div class="alert alert-danger">@ViewBag.Error</div>
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
+        <p class="text-gray-600">Actualice la información personal y el estado del usuario.</p>
+    </div>
+
+    <!-- Error general -->
+    @if (ViewBag.Error != null)
+    {
+        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
+            @ViewBag.Error
+        </div>
+    }
+
+    <!-- Card -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+
+        <form asp-action="Editar" method="post" class="space-y-6">
+
+            <input type="hidden" asp-for="IdUsuario" />
+
+            <!-- Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Comercio -->
+                <div>
+                    <label asp-for="IdComercio" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                    <input asp-for="IdComercio"
+                           readonly
+                           class="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700" />
+                    <span asp-validation-for="IdComercio" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Nombres -->
+                <div>
+                    <label asp-for="Nombres" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                    <input asp-for="Nombres"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="Nombres" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Primer Apellido -->
+                <div>
+                    <label asp-for="PrimerApellido" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                    <input asp-for="PrimerApellido"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="PrimerApellido" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Segundo Apellido -->
+                <div>
+                    <label asp-for="SegundoApellido" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                    <input asp-for="SegundoApellido"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="SegundoApellido" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Identificación -->
+                <div>
+                    <label asp-for="Identificacion" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                    <input asp-for="Identificacion"
+                           pattern="[0-9]{9}"
+                           maxlength="9"
+                           placeholder="100100100"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="Identificacion" class="text-sm text-red-600"></span>
+                    <p class="mt-1 text-xs text-gray-500">Debe contener exactamente 9 dígitos.</p>
+                </div>
+
+                <!-- Correo -->
+                <div>
+                    <label asp-for="CorreoElectronico" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                    <input asp-for="CorreoElectronico"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="CorreoElectronico" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Estado -->
+                <div>
+                    <label asp-for="Estado" class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                    <select asp-for="Estado"
+                            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                   focus:ring-sky-500 focus:border-sky-500">
+                        <option value="true">Activo</option>
+                        <option value="false">Inactivo</option>
+                    </select>
+                    <span asp-validation-for="Estado" class="text-sm text-red-600"></span>
+                </div>
+
+            </div>
+
+            <!-- Botones -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button type="submit"
+                        class="inline-flex items-center justify-center rounded-lg bg-yellow-500 px-4 py-2.5
+                               text-sm font-medium text-white hover:bg-yellow-600">
+                    Guardar cambios
+                </button>
+
+                <a asp-action="Index"
+                   class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white
+                          px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Volver
+                </a>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
-
-<form asp-action="Editar" method="post">
-
-    <input type="hidden" asp-for="IdUsuario" />
-
-    <div class="mb-3">
-        <label asp-for="IdComercio" class="form-label"></label>
-        <input asp-for="IdComercio" class="form-control" readonly />
-        <span asp-validation-for="IdComercio" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Nombres" class="form-label"></label>
-        <input asp-for="Nombres" class="form-control" />
-        <span asp-validation-for="Nombres" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="PrimerApellido" class="form-label"></label>
-        <input asp-for="PrimerApellido" class="form-control" />
-        <span asp-validation-for="PrimerApellido" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="SegundoApellido" class="form-label"></label>
-        <input asp-for="SegundoApellido" class="form-control" />
-        <span asp-validation-for="SegundoApellido" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Identificacion" class="form-label"></label>
-        <input asp-for="Identificacion" class="form-control" pattern="[0-9]{9}" maxlength="9" placeholder="100100100" />
-        <span asp-validation-for="Identificacion" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="CorreoElectronico" class="form-label"></label>
-        <input asp-for="CorreoElectronico" class="form-control" />
-        <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label asp-for="Estado" class="form-label">Estado</label>
-        <select asp-for="Estado" class="form-select">
-            <option value="true">Activo</option>
-            <option value="false">Inactivo</option>
-        </select>
-        <span asp-validation-for="Estado" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-warning">Guardar Cambios</button>
-    <a asp-action="Index" class="btn btn-secondary">Volver</a>
-
-</form>

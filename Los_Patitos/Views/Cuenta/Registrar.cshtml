@@ -4,60 +4,90 @@
 }
 
 <div class="py-6">
+
+    <!-- Título -->
     <div class="mb-6">
         <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
         <p class="text-gray-600">
-            Cree las credenciales y el rol de acceso. <strong>Nota</strong>: si el rol es <em>Cajero</em>, el usuario debe existir previamente en <code>Usuario_G4</code> con el mismo correo.
+            Cree las credenciales y el rol de acceso.
+            <strong>Nota</strong>: si el rol es <em>Cajero</em>, el usuario debe existir previamente en
+            <code class="px-1 py-0.5 rounded bg-gray-100 border border-gray-200">Usuario_G4</code>
+            con el mismo correo.
         </p>
     </div>
 
-    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-5 mb-6 max-w-xl">
-        <form asp-action="Registrar" method="post" class="space-y-4">
+    <!-- Card -->
+    <div class="max-w-xl bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+
+        <form asp-action="Registrar" method="post" class="space-y-5">
             @Html.AntiForgeryToken()
 
-            <div asp-validation-summary="ModelOnly" class="text-red-500 text-sm mb-2"></div>
-
-            <div class="flex flex-col">
-                <label asp-for="CorreoElectronico" class="text-sm font-medium text-gray-700 mb-1"></label>
-                <input asp-for="CorreoElectronico" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
-                <span asp-validation-for="CorreoElectronico" class="text-red-500 text-sm"></span>
+            <!-- Errores -->
+            <div asp-validation-summary="ModelOnly"
+                 class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
             </div>
 
-            <div class="flex flex-col">
-                <label asp-for="Contrasena" class="text-sm font-medium text-gray-700 mb-1"></label>
-                <input asp-for="Contrasena" type="password" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
-                <span asp-validation-for="Contrasena" class="text-red-500 text-sm"></span>
+            <!-- Correo -->
+            <div>
+                <label asp-for="CorreoElectronico" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="CorreoElectronico"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                       placeholder="correo@ejemplo.com" />
+                <span asp-validation-for="CorreoElectronico" class="text-sm text-red-600"></span>
             </div>
 
-            <div class="flex flex-col">
-                <label asp-for="ConfirmarContrasena" class="text-sm font-medium text-gray-700 mb-1"></label>
-                <input asp-for="ConfirmarContrasena" type="password" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
-                <span asp-validation-for="ConfirmarContrasena" class="text-red-500 text-sm"></span>
+            <!-- Contraseña -->
+            <div>
+                <label asp-for="Contrasena" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Contrasena" type="password"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                       placeholder="••••••••" />
+                <span asp-validation-for="Contrasena" class="text-sm text-red-600"></span>
             </div>
 
-            <div class="flex flex-col">
-                <label asp-for="Rol" class="text-sm font-medium text-gray-700 mb-1"></label>
-                <select asp-for="Rol" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:ring-sky-500 focus:border-sky-500">
+            <!-- Confirmar -->
+            <div>
+                <label asp-for="ConfirmarContrasena" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="ConfirmarContrasena" type="password"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                       placeholder="••••••••" />
+                <span asp-validation-for="ConfirmarContrasena" class="text-sm text-red-600"></span>
+            </div>
+
+            <!-- Rol -->
+            <div>
+                <label asp-for="Rol" class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <select asp-for="Rol"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                               focus:ring-sky-500 focus:border-sky-500">
                     <option value="">Seleccione...</option>
                     <option value="Administrador">Administrador</option>
                     <option value="Cajero">Cajero</option>
                 </select>
-                <span asp-validation-for="Rol" class="text-red-500 text-sm"></span>
+                <span asp-validation-for="Rol" class="text-sm text-red-600"></span>
             </div>
 
-            <div class="flex gap-3">
-                <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg py-2.5">
-                    Registrar
-                </button>
-            </div>
+            <!-- Botón -->
+            <button type="submit"
+                    class="w-full inline-flex items-center justify-center rounded-lg
+                           bg-sky-600 px-4 py-2.5 text-sm font-medium text-white
+                           hover:bg-sky-700 transition">
+                Registrar
+            </button>
 
-            <div class="mt-2 text-sm text-gray-600">
+            <!-- Link login -->
+            <div class="text-sm text-gray-600">
                 ¿Ya tiene una cuenta?
-                <a asp-controller="Cuenta" asp-action="IniciarSesion" class="text-sky-700 hover:underline font-medium">
+                <a asp-controller="Cuenta" asp-action="IniciarSesion"
+                   class="text-sky-700 hover:text-sky-800 font-medium">
                     Iniciar sesión
                 </a>
             </div>
         </form>
+
     </div>
 </div>
 

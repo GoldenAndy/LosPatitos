@@ -1,6 +1,52 @@
 ﻿@{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Política de privacidad";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="py-6 max-w-4xl mx-auto">
+
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
+        <p class="text-gray-600 mt-1">
+            Información sobre el uso y protección de los datos dentro del sistema.
+        </p>
+    </div>
+
+    <!-- Card -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6 space-y-4">
+
+        <p class="text-gray-700">
+            En <strong>Los Patitos</strong>, la privacidad de los usuarios es una prioridad.
+            Esta aplicación recopila y utiliza la información únicamente para fines operativos,
+            administrativos y de seguridad del sistema.
+        </p>
+
+        <p class="text-gray-700">
+            Los datos almacenados, tales como información de comercios, usuarios y transacciones
+            SINPE, son tratados de forma confidencial y no se comparten con terceros sin
+            autorización previa.
+        </p>
+
+        <p class="text-gray-700">
+            El acceso a la información está protegido mediante mecanismos de autenticación
+            y control de roles, garantizando que cada usuario solo pueda acceder a los recursos
+            para los cuales cuenta con permisos.
+        </p>
+
+        <p class="text-gray-700">
+            Para cualquier consulta relacionada con la privacidad o el manejo de datos,
+            puede contactar al administrador del sistema.
+        </p>
+
+    </div>
+
+    <!-- Volver -->
+    <div class="mt-6">
+        <a asp-controller="Home" asp-action="Index"
+           class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white
+                  px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Volver al inicio
+        </a>
+    </div>
+
+</div>

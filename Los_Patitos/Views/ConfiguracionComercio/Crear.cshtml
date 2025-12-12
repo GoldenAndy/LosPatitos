@@ -4,40 +4,81 @@
     ViewData["Title"] = "Registrar configuración de comercio";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="py-6">
 
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
+        <p class="text-gray-600">Defina el tipo de configuración y la comisión para el comercio.</p>
+    </div>
 
-<div class="mb-3">
-    <label class="form-label">Comercio</label>
-    <input type="text" value="@ViewBag.NombreComercio" class="form-control" readonly />
+    <!-- Error general -->
+    @if (TempData["Error"] != null)
+    {
+        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
+            @TempData["Error"]
+        </div>
+    }
+
+    <!-- Card -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+
+        <!-- Comercio -->
+        <div class="mb-6">
+            <label class="block text-sm font-medium text-gray-700 mb-1">Comercio</label>
+            <input type="text"
+                   value="@(ViewBag.NombreComercio ?? "—")"
+                   readonly
+                   class="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700
+                          focus:ring-sky-500 focus:border-sky-500" />
+        </div>
+
+        <form asp-action="Crear" method="post" class="space-y-6">
+            <div asp-validation-summary="ModelOnly"
+                 class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800"></div>
+
+            <input type="hidden" asp-for="IdComercio" />
+
+            <!-- Tipo -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de configuración</label>
+                <select asp-for="TipoConfiguracion"
+                        asp-items="ViewBag.TiposConfiguracion"
+                        class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                               focus:ring-sky-500 focus:border-sky-500">
+                </select>
+                <span asp-validation-for="TipoConfiguracion" class="text-sm text-red-600"></span>
+            </div>
+
+            <!-- Comisión -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Comisión (%)</label>
+                <input asp-for="Comision"
+                       type="number" min="0" max="100" step="0.01"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                       placeholder="Ej: 2.5" />
+                <span asp-validation-for="Comision" class="text-sm text-red-600"></span>
+                <p class="mt-1 text-xs text-gray-500">Rango permitido: 0 a 100.</p>
+            </div>
+
+            <!-- Botones -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button type="submit"
+                        class="inline-flex items-center justify-center rounded-lg bg-sky-600 px-4 py-2.5
+                               text-sm font-medium text-white hover:bg-sky-700">
+                    Guardar
+                </button>
+
+                <a asp-controller="Comercio" asp-action="Index"
+                   class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white
+                          px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </a>
+            </div>
+        </form>
+    </div>
 </div>
-
-<form asp-action="Crear" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <input type="hidden" asp-for="IdComercio" />
-
-    <div class="mb-3">
-        <label class="form-label">Tipo de configuración</label>
-        <select asp-for="TipoConfiguracion"
-                asp-items="ViewBag.TiposConfiguracion"
-                class="form-select"></select>
-        <span asp-validation-for="TipoConfiguracion" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Comisión (%)</label>
-        <input asp-for="Comision" class="form-control" type="number" min="0" max="100" />
-        <span asp-validation-for="Comision" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar</button>
-    <a asp-controller="Comercio" asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
-</form>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

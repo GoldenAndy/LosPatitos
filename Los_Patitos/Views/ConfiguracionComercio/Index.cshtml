@@ -1,63 +1,115 @@
-﻿@model List<Los_Patitos.Models.ConfiguracionComercio>
-
+﻿@model IEnumerable<Los_Patitos.Models.ConfiguracionComercio>
 @{
     ViewData["Title"] = "Configuración de comercios";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="py-6">
 
-@if (TempData["Ok"] != null)
-{
-    <div class="alert alert-success">@TempData["Ok"]</div>
-}
-@if (TempData["Error"] != null)
-{
-    <div class="alert alert-danger">@TempData["Error"]</div>
-}
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
+        <p class="text-gray-600">
+            Gestión de parámetros de comisión y tipo de configuración por comercio.
+        </p>
+    </div>
 
-@if (Model == null || !Model.Any())
-{
-    <div class="alert alert-info">No hay configuraciones registradas.</div>
-}
-else
-{
-    <table class="table table-striped table-bordered align-middle">
-        <thead>
-            <tr>
-                <th>Comercio</th>
-                <th>Tipo de configuración</th>
-                <th>Comisión</th>
-                <th>Fecha de registro</th>
-                <th>Fecha de modificación</th>
-                <th>Estado</th>
-                <th style="width:120px;">Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var c in Model)
-            {
-                <tr>
-                    <td>@c.Comercio?.Nombre</td>
-                    <td>
-                        @(c.TipoConfiguracion == 1 ? "Plataforma"
-                                        : c.TipoConfiguracion == 2 ? "Externa"
-                                        : c.TipoConfiguracion == 3 ? "Ambas"
-                                        : "Desconocido")
-                                                    </td>
-                                                    <td>@c.Comision %</td>
-                                                    <td>@c.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</td>
-                                                    <td>
-                        @(c.FechaDeModificacion.HasValue
-                                        ? c.FechaDeModificacion.Value.ToString("dd/MM/yyyy HH:mm")
-                                        : "—")
-            </td>
-            <td>@(c.Estado ? "Activo" : "Inactivo")</td>
-            <td>
-                <a asp-action="Editar" asp-route-id="@c.IdConfiguracion"
-                   class="btn btn-sm btn-warning">Editar</a>
-            </td>
-        </tr>
-                }
-        </tbody>
-    </table>
-}
+    <!-- Mensajes -->
+    @if (TempData["Ok"] != null)
+    {
+        <div class="mb-6 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-green-800">
+            @TempData["Ok"]
+        </div>
+    }
+
+    @if (TempData["Error"] != null)
+    {
+        <div class="mb-6 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800">
+            @TempData["Error"]
+        </div>
+    }
+
+    @if (Model == null || !Model.Any())
+    {
+        <div class="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
+            No hay configuraciones registradas.
+        </div>
+    }
+    else
+    {
+        <!-- Tabla -->
+        <div class="overflow-x-auto bg-white border border-gray-200 shadow-sm rounded-lg">
+            <table class="min-w-full text-sm text-left text-gray-600">
+
+                <thead class="bg-sky-50 text-sky-700 text-xs uppercase font-medium border-b border-gray-200">
+                    <tr>
+                        <th class="px-4 py-3">Comercio</th>
+                        <th class="px-4 py-3">Tipo</th>
+                        <th class="px-4 py-3">Comisión</th>
+                        <th class="px-4 py-3">Registro</th>
+                        <th class="px-4 py-3">Modificación</th>
+                        <th class="px-4 py-3">Estado</th>
+                        <th class="px-4 py-3 w-[140px]">Acciones</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr class="border-b hover:bg-gray-50">
+
+                            <td class="px-4 py-3 font-medium text-gray-900">
+                                @(c.Comercio?.Nombre ?? "—")
+                            </td>
+
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 rounded-md text-xs font-bold
+                                            @(c.TipoConfiguracion == 1 ? "bg-blue-100 text-blue-700" :
+                                                                            c.TipoConfiguracion == 2 ? "bg-purple-100 text-purple-700" :
+                                                                            c.TipoConfiguracion == 3 ? "bg-sky-100 text-sky-700" :
+                                                                            "bg-gray-100 text-gray-700")">
+                                    @(c.TipoConfiguracion == 1 ? "Plataforma" :
+                                                                c.TipoConfiguracion == 2 ? "Externa" :
+                                                                c.TipoConfiguracion == 3 ? "Ambas" :
+                                                                "Desconocido")
+                                                                          </span>
+                                                                      </td>
+
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                <span class="font-medium text-gray-900">@c.Comision</span> %
+                            </td>
+
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                @c.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")
+                            </td>
+
+                            <td class="px-4 py-3 whitespace-nowrap">
+                                @(c.FechaDeModificacion.HasValue
+                                                        ? c.FechaDeModificacion.Value.ToString("dd/MM/yyyy HH:mm")
+                                                        : "—")
+                    </td>
+
+                            <td class="px-4 py-3">
+                                <span class="px-2 py-1 rounded-md text-xs font-bold
+                                            @(c.Estado ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")">
+                                    @(c.Estado ? "Activo" : "Inactivo")
+                                </span>
+                            </td>
+
+                            <td class="px-4 py-3">
+                                <a asp-action="Editar" asp-route-id="@c.IdConfiguracion"
+                                   class="inline-flex items-center justify-center rounded-lg
+                                                  bg-yellow-500 px-3 py-2 text-xs font-semibold text-white
+                                                  hover:bg-yellow-600">
+                                    Editar
+                                </a>
+                            </td>
+
+                        </tr>
+                                }
+                </tbody>
+
+            </table>
+        </div>
+    }
+
+</div>

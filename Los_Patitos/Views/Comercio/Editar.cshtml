@@ -3,75 +3,135 @@
     ViewData["Title"] = "Editar comercio";
 }
 
-<h2>@ViewData["Title"]</h2>
+<div class="py-6">
 
-<form asp-action="Editar" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <input type="hidden" asp-for="IdComercio" />
-
-    <div class="mb-3">
-        <label class="form-label">Identificación</label>
-        <input asp-for="Identificacion" class="form-control" readonly/>
-        <span asp-validation-for="Identificacion" class="text-danger"></span>
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
+        <p class="text-gray-600">Actualice la información general y el estado del comercio.</p>
     </div>
 
-    <div class="mb-3">
-        <label class="form-label">Tipo de identificación</label>
-        <select asp-for="TipoIdentificacion"
-                asp-items="ViewBag.TiposIdentificacion"
-                class="form-select"
-                disabled></select>
-        <input type="hidden" asp-for="TipoIdentificacion" />
-        <span asp-validation-for="TipoIdentificacion" class="text-danger"></span>
+    <!-- Card -->
+    <div class="bg-white border border-gray-200 rounded-lg shadow-sm p-6">
+
+        <form asp-action="Editar" method="post" class="space-y-6">
+
+            <div asp-validation-summary="ModelOnly"
+                 class="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-red-800"></div>
+
+            <input type="hidden" asp-for="IdComercio" />
+
+            <!-- Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+                <!-- Identificación -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Identificación</label>
+                    <input asp-for="Identificacion"
+                           readonly
+                           class="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700
+                                  focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="Identificacion" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Tipo Identificación -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de identificación</label>
+                    <select asp-for="TipoIdentificacion"
+                            asp-items="ViewBag.TiposIdentificacion"
+                            disabled
+                            class="w-full rounded-lg border border-gray-300 bg-gray-50 px-3 py-2 text-gray-700">
+                    </select>
+
+                    <!-- Para el POST -->
+                    <input type="hidden" asp-for="TipoIdentificacion" />
+
+                    <span asp-validation-for="TipoIdentificacion" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Nombre -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nombre</label>
+                    <input asp-for="Nombre"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="Nombre" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Tipo Comercio -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Tipo de comercio</label>
+                    <select asp-for="TipoComercio"
+                            asp-items="ViewBag.TiposComercio"
+                            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                   focus:ring-sky-500 focus:border-sky-500">
+                    </select>
+                    <span asp-validation-for="TipoComercio" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Teléfono -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Teléfono</label>
+                    <input asp-for="Telefono"
+                           type="tel"
+                           inputmode="numeric"
+                           pattern="\d{8}"
+                           maxlength="8"
+                           title="Debe tener exactamente 8 dígitos"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="Telefono" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Correo -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Correo electrónico</label>
+                    <input asp-for="CorreoElectronico"
+                           class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                  placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500" />
+                    <span asp-validation-for="CorreoElectronico" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Dirección -->
+                <div class="md:col-span-2">
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Dirección</label>
+                    <textarea asp-for="Direccion" rows="3"
+                              class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                     placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"></textarea>
+                    <span asp-validation-for="Direccion" class="text-sm text-red-600"></span>
+                </div>
+
+                <!-- Estado -->
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Estado</label>
+                    <select asp-for="Estado"
+                            asp-items="ViewBag.Estados"
+                            class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                                   focus:ring-sky-500 focus:border-sky-500">
+                    </select>
+                    <span asp-validation-for="Estado" class="text-sm text-red-600"></span>
+                </div>
+
+            </div>
+
+            <!-- Botones -->
+            <div class="flex flex-col sm:flex-row gap-3 pt-2">
+                <button type="submit"
+                        class="inline-flex items-center justify-center rounded-lg bg-sky-600 px-4 py-2.5
+                               text-sm font-medium text-white hover:bg-sky-700">
+                    Guardar cambios
+                </button>
+
+                <a asp-action="Index"
+                   class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white
+                          px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    Cancelar
+                </a>
+            </div>
+
+        </form>
     </div>
-
-    <div class="mb-3">
-        <label class="form-label">Nombre</label>
-        <input asp-for="Nombre" class="form-control" />
-        <span asp-validation-for="Nombre" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Tipo de comercio</label>
-        <select asp-for="TipoComercio" asp-items="ViewBag.TiposComercio" class="form-select"></select>
-        <span asp-validation-for="TipoComercio" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Teléfono</label>
-        <input asp-for="Telefono"
-               class="form-control"
-               type="tel"
-               inputmode="numeric"
-               pattern="\d{8}"
-               maxlength="8"
-               title="Debe tener exactamente 8 dígitos" />
-        <span asp-validation-for="Telefono" class="text-danger"></span>
-    </div>
-
-
-    <div class="mb-3">
-        <label class="form-label">Correo electrónico</label>
-        <input asp-for="CorreoElectronico" class="form-control" />
-        <span asp-validation-for="CorreoElectronico" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Dirección</label>
-        <textarea asp-for="Direccion" class="form-control" rows="3"></textarea>
-        <span asp-validation-for="Direccion" class="text-danger"></span>
-    </div>
-
-    <div class="mb-3">
-        <label class="form-label">Estado</label>
-        <select asp-for="Estado" asp-items="ViewBag.Estados" class="form-select"></select>
-        <span asp-validation-for="Estado" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary">Guardar cambios</button>
-    <a asp-action="Index" class="btn btn-outline-secondary">Cancelar</a>
-</form>
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />

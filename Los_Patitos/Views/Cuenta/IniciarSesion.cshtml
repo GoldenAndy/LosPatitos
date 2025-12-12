@@ -4,53 +4,85 @@
 }
 
 <div class="min-h-screen flex items-center justify-center bg-gray-50">
-    <div class="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-sm p-8">
-        <h1 class="text-2xl font-bold text-sky-700 mb-2">Iniciar sesión</h1>
-        <p class="text-gray-600 mb-6">Acceda al panel de administración de Los Patitos.</p>
 
+    <div class="w-full max-w-md bg-white border border-gray-200 rounded-xl shadow-sm p-8">
+
+        <!-- Título -->
+        <div class="mb-6 text-center">
+            <h1 class="text-2xl font-bold text-sky-700">Iniciar sesión</h1>
+            <p class="text-gray-600 mt-1">
+                Acceda al panel de administración de <span class="font-semibold">Los Patitos</span>.
+            </p>
+        </div>
+
+        <!-- Mensaje OK -->
         @if (TempData["Ok"] is string okMsg)
         {
-            <div class="mb-4 text-sm text-green-800 bg-green-50 border border-green-200 rounded-lg px-3 py-2">
+            <div class="mb-4 rounded-lg border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-800">
                 @okMsg
             </div>
         }
 
-        <div asp-validation-summary="ModelOnly" class="mb-4 text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg px-3 py-2"></div>
+        <!-- Errores -->
+        <div asp-validation-summary="ModelOnly"
+             class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-800">
+        </div>
 
-        <form asp-action="IniciarSesion" method="post" class="space-y-4">
+        <form asp-action="IniciarSesion" method="post" class="space-y-5">
             @Html.AntiForgeryToken()
 
             <input type="hidden" asp-for="ReturnUrl" />
 
+            <!-- Correo -->
             <div>
-                <label asp-for="CorreoElectronico" class="block text-sm font-medium text-gray-700 mb-1"></label>
-                <input asp-for="CorreoElectronico" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:ring-sky-500 focus:border-sky-500" placeholder="correo@ejemplo.com" />
+                <label asp-for="CorreoElectronico"
+                       class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="CorreoElectronico"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                       placeholder="correo@ejemplo.com" />
                 <span asp-validation-for="CorreoElectronico" class="text-sm text-red-600"></span>
             </div>
 
+            <!-- Contraseña -->
             <div>
-                <label asp-for="Contrasena" class="block text-sm font-medium text-gray-700 mb-1"></label>
-                <input asp-for="Contrasena" type="password" class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700 focus:ring-sky-500 focus:border-sky-500" placeholder="••••••••" />
+                <label asp-for="Contrasena"
+                       class="block text-sm font-medium text-gray-700 mb-1"></label>
+                <input asp-for="Contrasena"
+                       type="password"
+                       class="w-full rounded-lg border border-gray-300 px-3 py-2 text-gray-700
+                              placeholder-gray-400 focus:ring-sky-500 focus:border-sky-500"
+                       placeholder="••••••••" />
                 <span asp-validation-for="Contrasena" class="text-sm text-red-600"></span>
             </div>
 
+            <!-- Recordarme -->
             <div class="flex items-center justify-between">
                 <label class="inline-flex items-center text-sm text-gray-700">
-                    <input asp-for="Recordarme" type="checkbox" class="rounded border-gray-300 text-sky-600" />
+                    <input asp-for="Recordarme"
+                           type="checkbox"
+                           class="rounded border-gray-300 text-sky-600 focus:ring-sky-500" />
                     <span class="ml-2">Recordarme</span>
                 </label>
             </div>
 
-            <button type="submit" class="w-full bg-sky-600 hover:bg-sky-700 text-white font-medium rounded-lg py-2.5">
+            <!-- Botón -->
+            <button type="submit"
+                    class="w-full inline-flex items-center justify-center rounded-lg
+                           bg-sky-600 px-4 py-2.5 text-sm font-medium text-white
+                           hover:bg-sky-700 transition">
                 Iniciar sesión
             </button>
         </form>
 
+        <!-- Registro -->
         <div class="mt-6 text-center">
-            <a asp-controller="Cuenta" asp-action="Registrar" class="text-sky-600 hover:text-sky-700 font-medium">
+            <a asp-controller="Cuenta" asp-action="Registrar"
+               class="text-sky-600 hover:text-sky-700 font-medium text-sm">
                 ¿No tiene una cuenta? Registrar usuario
             </a>
         </div>
+
     </div>
 </div>
 

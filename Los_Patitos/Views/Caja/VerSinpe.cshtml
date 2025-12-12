@@ -2,52 +2,61 @@
 @using Los_Patitos.Models
 
 @{
+    ViewData["Title"] = ViewData["Title"] ?? "SINPEs de la Caja";
     CajaModel? caja = ViewBag.Caja as CajaModel;
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4 text-primary fw-bold">
-        <i class="bi bi-bank"></i> @ViewData["Title"]
-    </h2>
+<div class="py-6">
+
+    <!-- Título -->
+    <div class="mb-6">
+        <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
+        <p class="text-gray-600">Detalle de SINPE actual de la caja y transacciones recibidas.</p>
+    </div>
 
     <!-- Información de la Caja -->
     @if (caja != null)
     {
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-header bg-primary text-white fw-bold">
-                SINPE Actual de la Caja
+        <div class="bg-white border border-gray-200 rounded-lg shadow-sm mb-6">
+            <div class="px-5 py-4 border-b border-gray-200 bg-sky-50">
+                <h2 class="text-sm font-semibold uppercase text-sky-700">SINPE actual de la caja</h2>
             </div>
-            <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col-md-6">
-                        <p class="mb-1 fw-semibold text-secondary">Nombre de la Caja:</p>
-                        <p class="fs-5">@caja.Nombre</p>
-                    </div>
-                    <div class="col-md-6">
-                        <p class="mb-1 fw-semibold text-secondary">Teléfono SINPE:</p>
-                        <p class="fs-5">@caja.TelefonoSINPE</p>
-                    </div>
-                </div>
 
-                <div class="row mb-2">
-                    <div class="col-md-6">
-                        <p class="mb-1 fw-semibold text-secondary">Estado:</p>
-                        <span class="badge @(caja.Estado ? "bg-success" : "bg-danger")">
-                            @(caja.Estado ? "Activa" : "Inactiva")
-                        </span>
+            <div class="p-5">
+                <dl class="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-4">
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Nombre de la caja</dt>
+                        <dd class="mt-1 text-sm text-gray-900 font-medium">@caja.Nombre</dd>
                     </div>
-                    <div class="col-md-6">
-                        <p class="mb-1 fw-semibold text-secondary">Fecha de Registro:</p>
-                        <p>@caja.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</p>
-                    </div>
-                </div>
 
-                <div class="row">
-                    <div class="col-md-6">
-                        <p class="mb-1 fw-semibold text-secondary">Última Modificación:</p>
-                        <p>@((caja.FechaDeModificacion?.ToString("dd/MM/yyyy HH:mm")) ?? "Sin cambios")</p>
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Teléfono SINPE</dt>
+                        <dd class="mt-1 text-sm text-gray-900 font-medium">@caja.TelefonoSINPE</dd>
                     </div>
-                </div>
+
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Estado</dt>
+                        <dd class="mt-1">
+                            <span class="px-2 py-1 rounded-md text-xs font-bold @(caja.Estado ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")">
+                                @(caja.Estado ? "Activa" : "Inactiva")
+                            </span>
+                        </dd>
+                    </div>
+
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Fecha de registro</dt>
+                        <dd class="mt-1 text-sm text-gray-900">
+                            @caja.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")
+                        </dd>
+                    </div>
+
+                    <div>
+                        <dt class="text-sm font-medium text-gray-500">Última modificación</dt>
+                        <dd class="mt-1 text-sm text-gray-900">
+                            @((caja.FechaDeModificacion?.ToString("dd/MM/yyyy HH:mm")) ?? "Sin cambios")
+                        </dd>
+                    </div>
+                </dl>
             </div>
         </div>
     }
@@ -55,89 +64,99 @@
     <!-- SINPEs Recibidos -->
     @if (Model == null || !Model.Any())
     {
-        <div class="alert alert-info mt-4 text-center shadow-sm">
-            <i class="bi bi-info-circle"></i> No se han recibido SINPEs para esta caja.
+        <div class="rounded-lg border border-gray-200 bg-white p-6 text-gray-600">
+            No se han recibido SINPEs para esta caja.
         </div>
     }
     else
     {
-        <div class="card shadow-sm border-0 mb-4">
-            <div class="card-header bg-secondary text-white fw-bold">
-                SINPEs Recibidos
+        <div class="bg-white border border-gray-200 rounded-lg shadow-sm">
+            <div class="px-5 py-4 border-b border-gray-200 bg-gray-50">
+                <h2 class="text-sm font-semibold uppercase text-gray-700">SINPEs recibidos</h2>
             </div>
-            <div class="card-body">
+
+            <div class="p-5 space-y-4">
                 @foreach (var sinpe in Model.OrderByDescending(s => s.FechaDeRegistro))
                 {
-                    <div class="border rounded p-3 mb-3 bg-light">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="mb-1 fw-semibold text-secondary">Teléfono Origen:</p>
-                                <p>@sinpe.TelefonoOrigen</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-1 fw-semibold text-secondary">Nombre Origen:</p>
-                                <p>@sinpe.NombreOrigen</p>
-                            </div>
-                        </div>
+                    <div class="border border-gray-200 rounded-lg p-4 hover:bg-gray-50">
 
-                        <div class="row">
-                            <div class="col-md-6">
-                                <p class="mb-1 fw-semibold text-secondary">Teléfono Destinatario:</p>
-                                <p>@sinpe.TelefonoDestinaria</p>
+                        <div class="flex flex-col md:flex-row md:items-start md:justify-between gap-3">
+                            <div>
+                                <p class="text-sm text-gray-500">Monto</p>
+                                <p class="text-lg font-semibold text-gray-900">
+                                    ₡@sinpe.Monto.ToString("N2")
+                                </p>
                             </div>
-                            <div class="col-md-6">
-                                <p class="mb-1 fw-semibold text-secondary">Nombre Destinatario:</p>
-                                <p>@sinpe.NombreDestinaria</p>
-                            </div>
-                        </div>
 
-                        <div class="row">
-                            <div class="col-md-4">
-                                <p class="mb-1 fw-semibold text-secondary">Monto:</p>
-                                <p class="text-success fw-bold">₡@sinpe.Monto.ToString("N2")</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="mb-1 fw-semibold text-secondary">Fecha:</p>
-                                <p>@sinpe.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")</p>
-                            </div>
-                            <div class="col-md-4">
-                                <p class="mb-1 fw-semibold text-secondary">Estado:</p>
-                                <span class="badge @(sinpe.Estado ? "bg-success" : "bg-warning text-dark")">
+                            <div class="flex items-center gap-2">
+                                <span class="px-2 py-1 rounded-md text-xs font-bold
+                                            @(sinpe.Estado ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-800")">
                                     @(sinpe.Estado ? "Sincronizado" : "No sincronizado")
+                                </span>
+
+                                <span class="text-sm text-gray-500 whitespace-nowrap">
+                                    @sinpe.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")
                                 </span>
                             </div>
                         </div>
 
-                        <div class="mt-2">
-                            <p class="mb-1 fw-semibold text-secondary">Descripción:</p>
-                            <p>@(!string.IsNullOrWhiteSpace(sinpe.Descripcion) ? sinpe.Descripcion : "Sin descripción")</p>
+                        <div class="mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="rounded-lg bg-gray-50 border border-gray-200 p-3">
+                                <p class="text-xs font-semibold uppercase text-gray-500">Origen</p>
+                                <p class="mt-1 text-sm text-gray-900">
+                                    <span class="font-medium">Tel:</span> @sinpe.TelefonoOrigen
+                                </p>
+                                <p class="text-sm text-gray-900">
+                                    <span class="font-medium">Nombre:</span> @sinpe.NombreOrigen
+                                </p>
+                            </div>
+
+                            <div class="rounded-lg bg-gray-50 border border-gray-200 p-3">
+                                <p class="text-xs font-semibold uppercase text-gray-500">Destinatario</p>
+                                <p class="mt-1 text-sm text-gray-900">
+                                    <span class="font-medium">Tel:</span> @sinpe.TelefonoDestinaria
+                                </p>
+                                <p class="text-sm text-gray-900">
+                                    <span class="font-medium">Nombre:</span> @sinpe.NombreDestinaria
+                                </p>
+                            </div>
                         </div>
 
-                        @if (!sinpe.Estado) //Sincronizar SINPE vía API
+                        <div class="mt-4">
+                            <p class="text-sm font-medium text-gray-700 mb-1">Descripción</p>
+                            <p class="text-sm text-gray-600">
+                                @(!string.IsNullOrWhiteSpace(sinpe.Descripcion) ? sinpe.Descripcion : "Sin descripción")
+                            </p>
+                        </div>
+
+                        @if (!sinpe.Estado)
                         {
-                            <button type="button"
-                                    class="btn btn-warning mt-2 fw-bold js-sincronizar-sinpe"
-                                    data-id-sinpe="@sinpe.IdSinpe">
-                                <i class="bi bi-arrow-repeat"></i> Sincronizar
-                            </button>
+                            <div class="mt-4">
+                                <button type="button"
+                                        class="inline-flex items-center justify-center rounded-lg bg-yellow-500 px-4 py-2.5
+                                                           text-sm font-medium text-white hover:bg-yellow-600 js-sincronizar-sinpe"
+                                        data-id-sinpe="@sinpe.IdSinpe">
+                                    Sincronizar
+                                </button>
+                            </div>
                         }
-
-
-
                     </div>
                 }
             </div>
         </div>
     }
 
-    <div class="text-end mt-3">
-        <a asp-controller="Comercio" asp-action="Index" class="btn btn-outline-secondary">
-            <i class="bi bi-arrow-left"></i> Volver
+    <!-- Volver -->
+    <div class="mt-6">
+        <a asp-controller="Comercio" asp-action="Index"
+           class="inline-flex items-center justify-center rounded-lg border border-gray-300 bg-white
+                  px-4 py-2.5 text-sm font-medium text-gray-700 hover:bg-gray-50">
+            Volver
         </a>
     </div>
 
-
 </div>
+
 @section Scripts {
     <script>
         (function () {
@@ -157,15 +176,12 @@
                     const button = this;
                     const originalHtml = button.innerHTML;
                     button.disabled = true;
-                    button.innerHTML =
-                        '<span class="spinner-border spinner-border-sm me-1" role="status" aria-hidden="true"></span> Sincronizando...';
+                    button.innerHTML = 'Sincronizando...';
 
                     try {
                         const response = await fetch(`${apiBaseUrl}/api/sinpe/sincronizar`, {
                             method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
+                            headers: { 'Content-Type': 'application/json' },
                             body: JSON.stringify({ idSinpe: parseInt(idSinpe) })
                         });
 
@@ -178,20 +194,20 @@
                             return;
                         }
 
-                        //Actualizar el card
-                        const card = button.closest('.border.rounded');
+                        // Actualizar el card visualmente
+                        const card = button.closest('.border.border-gray-200');
                         if (card) {
-                            const badge = card.querySelector('.badge');
+                            const badge = card.querySelector('span.bg-yellow-100');
                             if (badge) {
-                                badge.classList.remove('bg-warning', 'text-dark');
-                                badge.classList.add('bg-success');
+                                badge.classList.remove('bg-yellow-100', 'text-yellow-800');
+                                badge.classList.add('bg-green-100', 'text-green-700');
                                 badge.textContent = 'Sincronizado';
                             }
                         }
 
-                        button.classList.remove('btn-warning');
-                        button.classList.add('btn-success');
-                        button.innerHTML = '<i class="bi bi-check2-circle"></i> Sincronizado';
+                        button.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+                        button.classList.add('bg-green-600');
+                        button.innerHTML = 'Sincronizado';
                     } catch (err) {
                         console.error(err);
                         alert('Error de conexión con el API.');
