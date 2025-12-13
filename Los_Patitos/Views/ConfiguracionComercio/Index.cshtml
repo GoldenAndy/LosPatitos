@@ -38,7 +38,7 @@
     {
         <!-- Tabla -->
         <div class="overflow-x-auto bg-white border border-gray-200 shadow-sm rounded-lg">
-            <table class="min-w-full text-sm text-left text-gray-600">
+            <table class="min-w-full text-sm text-left">
 
                 <thead class="bg-sky-50 text-sky-700 text-xs uppercase font-medium border-b border-gray-200">
                     <tr>
@@ -57,12 +57,14 @@
                     {
                         <tr class="border-b hover:bg-gray-50">
 
-                            <td class="px-4 py-3 font-medium text-gray-900">
+                            <!-- Comercio -->
+                            <td class="px-4 py-3">
                                 @(c.Comercio?.Nombre ?? "—")
                             </td>
 
+                            <!-- Tipo -->
                             <td class="px-4 py-3">
-                                <span class="px-2 py-1 rounded-md text-xs font-bold
+                                <span class="px-2 py-1 rounded-md text-xs font-semibold
                                             @(c.TipoConfiguracion == 1 ? "bg-blue-100 text-blue-700" :
                                                                             c.TipoConfiguracion == 2 ? "bg-purple-100 text-purple-700" :
                                                                             c.TipoConfiguracion == 3 ? "bg-sky-100 text-sky-700" :
@@ -74,20 +76,24 @@
                                                                           </span>
                                                                       </td>
 
+                            <!-- Comisión -->
                             <td class="px-4 py-3 whitespace-nowrap">
-                                <span class="font-medium text-gray-900">@c.Comision</span> %
+                                @c.Comision %
                             </td>
 
+                            <!-- Registro -->
                             <td class="px-4 py-3 whitespace-nowrap">
                                 @c.FechaDeRegistro.ToString("dd/MM/yyyy HH:mm")
                             </td>
 
+                            <!-- Modificación -->
                             <td class="px-4 py-3 whitespace-nowrap">
                                 @(c.FechaDeModificacion.HasValue
                                                         ? c.FechaDeModificacion.Value.ToString("dd/MM/yyyy HH:mm")
                                                         : "—")
                     </td>
 
+                            <!-- Estado -->
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 rounded-md text-xs font-bold
                                             @(c.Estado ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")">
@@ -95,6 +101,7 @@
                                 </span>
                             </td>
 
+                            <!-- Acciones -->
                             <td class="px-4 py-3">
                                 <a asp-action="Editar" asp-route-id="@c.IdConfiguracion"
                                    class="inline-flex items-center justify-center rounded-lg

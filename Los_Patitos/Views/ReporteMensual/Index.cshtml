@@ -64,7 +64,7 @@
     {
         <!-- Tabla -->
         <div class="overflow-x-auto bg-white border border-gray-200 shadow-sm rounded-lg">
-            <table class="min-w-full text-sm text-left text-gray-600">
+            <table class="min-w-full text-sm text-left">
 
                 <thead class="bg-sky-50 text-sky-700 text-xs uppercase font-medium border-b border-gray-200">
                     <tr>
@@ -81,7 +81,9 @@
                     @foreach (var r in Model)
                     {
                         <tr class="border-b hover:bg-gray-50">
-                            <td class="px-4 py-3 font-medium text-gray-900">
+
+                            <!-- Comercio -->
+                            <td class="px-4 py-3">
                                 @(r.Comercio?.Nombre ?? "—")
                             </td>
 
@@ -104,6 +106,7 @@
                             <td class="px-4 py-3 whitespace-nowrap">
                                 @r.FechaDelReporte.ToString("dd/MM/yyyy HH:mm")
                             </td>
+
                         </tr>
                     }
                 </tbody>

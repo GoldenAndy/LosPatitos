@@ -11,8 +11,10 @@
     <div class="mb-6">
         <h1 class="text-3xl font-bold text-sky-700">@ViewData["Title"]</h1>
         <p class="text-gray-600">Administración de cajas asociadas al comercio.</p>
+
+        <!-- Ajuste -->
         <p class="mt-2 text-sm text-gray-500">
-            Comercio: <span class="font-semibold text-gray-800">@nombreComercio</span>
+            Comercio: <span>@nombreComercio</span>
         </p>
     </div>
 
@@ -50,7 +52,7 @@
     {
         <!-- Tabla -->
         <div class="overflow-x-auto bg-white border border-gray-200 shadow-sm rounded-lg">
-            <table class="min-w-full text-sm text-left text-gray-600">
+            <table class="min-w-full text-sm text-left">
 
                 <thead class="bg-sky-50 text-sky-700 text-xs uppercase font-medium border-b border-gray-200">
                     <tr>
@@ -71,7 +73,8 @@
 
                         <tr class="border-b hover:bg-gray-50">
 
-                            <td class="px-4 py-3 font-medium text-gray-900">@c.Nombre</td>
+                            <!-- Ajuste -->
+                            <td class="px-4 py-3">@c.Nombre</td>
 
                             <td class="px-4 py-3">
                                 <span title="@desc">@descCorta</span>
@@ -83,7 +86,7 @@
 
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 rounded-md text-xs font-bold
-                                            @(c.Estado ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")">
+                                                    @(c.Estado ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700")">
                                     @(c.Estado ? "Activo" : "Inactivo")
                                 </span>
                             </td>
@@ -103,13 +106,10 @@
                                     </a>
                                 </div>
                             </td>
-
                         </tr>
                     }
                 </tbody>
-
             </table>
         </div>
     }
-
 </div>

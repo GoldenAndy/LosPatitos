@@ -44,7 +44,7 @@
 
     <!-- Tabla -->
     <div class="overflow-x-auto bg-white border border-gray-200 shadow-sm rounded-lg">
-        <table class="min-w-full text-sm text-left text-gray-600">
+        <table class="min-w-full text-sm text-left">
 
             <thead class="bg-sky-50 text-sky-700 text-xs uppercase font-medium border-b border-gray-200">
                 <tr>
@@ -64,12 +64,12 @@
                 @if (Model == null || !Model.Any())
                 {
                     <tr>
-                        <td colspan="9" class="px-4 py-8 text-center text-gray-500">
+                        <td colspan="9" class="px-4 py-8 text-center">
                             <div class="flex flex-col items-center gap-2">
                                 <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                                 </svg>
-                                <span class="font-medium">No hay usuarios registrados.</span>
+                                <span>No hay usuarios registrados.</span>
                             </div>
                         </td>
                     </tr>
@@ -80,21 +80,24 @@
                     {
                         <tr class="border-b hover:bg-gray-50">
 
-                            <td class="px-4 py-3 font-medium text-gray-900">@u.Nombres</td>
+                            <!-- Nombres -->
+                            <td class="px-4 py-3">@u.Nombres</td>
 
                             <td class="px-4 py-3">@u.PrimerApellido</td>
 
                             <td class="px-4 py-3">@u.SegundoApellido</td>
 
-                            <td class="px-4 py-3 font-medium text-gray-900">@u.Identificacion</td>
+                            <!-- Identificación -->
+                            <td class="px-4 py-3">@u.Identificacion</td>
 
                             <td class="px-4 py-3">@u.CorreoElectronico</td>
 
-                            <td class="px-4 py-3 whitespace-nowrap text-gray-500">
+                            <!-- Fechas -->
+                            <td class="px-4 py-3 whitespace-nowrap">
                                 @u.FechaDeRegistro.ToString("yyyy-MM-dd HH:mm")
                             </td>
 
-                            <td class="px-4 py-3 whitespace-nowrap text-gray-500">
+                            <td class="px-4 py-3 whitespace-nowrap">
                                 @(u.FechaDeModificacion?.ToString("yyyy-MM-dd HH:mm") ?? "-")
                             </td>
 

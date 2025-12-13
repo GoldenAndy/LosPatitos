@@ -15,25 +15,20 @@
     @if (TempData["Ok"] != null)
     {
         <div class="bg-green-50 border border-green-200 text-green-800 px-4 py-3 rounded-lg mb-6 flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
-            </svg>
             <span>@TempData["Ok"]</span>
         </div>
     }
     @if (TempData["Error"] != null)
     {
         <div class="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-lg mb-6 flex items-center">
-            <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-            </svg>
             <span>@TempData["Error"]</span>
         </div>
     }
 
     <!-- Botones de acción -->
     <div class="mb-6 flex flex-wrap gap-3">
-        <a asp-action="Crear" class="bg-sky-600 hover:bg-sky-700 text-white font-medium px-4 py-2.5 rounded-lg transition-colors">
+        <a asp-action="Crear"
+           class="bg-sky-600 hover:bg-sky-700 text-white font-medium px-4 py-2.5 rounded-lg transition-colors">
             Nuevo comercio
         </a>
         <a asp-controller="ConfiguracionComercio" asp-action="Index"
@@ -56,7 +51,7 @@
     {
         <!-- Tabla -->
         <div class="overflow-x-auto bg-white border border-gray-200 shadow-sm rounded-lg">
-            <table class="min-w-full text-sm text-left text-gray-600">
+            <table class="min-w-full text-sm text-left">
 
                 <thead class="bg-sky-50 text-sky-700 text-xs uppercase font-medium border-b border-gray-200">
                     <tr>
@@ -76,7 +71,9 @@
                     {
                         <tr class="border-b hover:bg-gray-50">
 
-                            <td class="px-4 py-3 font-medium text-gray-900">@c.Identificacion</td>
+                            <td class="px-4 py-3">
+                                @c.Identificacion
+                            </td>
 
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 rounded-md text-xs font-semibold
@@ -86,7 +83,9 @@
                                                                                                                    </span>
                                                                                                                </td>
 
-                            <td class="px-4 py-3 font-medium text-gray-900">@c.Nombre</td>
+                            <td class="px-4 py-3">
+                                @c.Nombre
+                            </td>
 
                             <td class="px-4 py-3">
                                 <span class="px-2 py-1 rounded-md text-xs font-semibold
@@ -102,7 +101,6 @@
                     </td>
 
                             <td class="px-4 py-3">@c.Telefono</td>
-
                             <td class="px-4 py-3">@c.CorreoElectronico</td>
 
                             <td class="px-4 py-3">
@@ -115,28 +113,23 @@
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap gap-1 justify-center">
                                     <a asp-action="Editar" asp-route-id="@c.IdComercio"
-                                       class="bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-medium px-2 py-1 rounded transition-colors"
-                                       title="Editar">
+                                       class="bg-yellow-500 hover:bg-yellow-600 text-white text-xs font-medium px-2 py-1 rounded">
                                         Editar
                                     </a>
                                     <a asp-action="Detalles" asp-route-id="@c.IdComercio"
-                                       class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded transition-colors"
-                                       title="Detalles">
+                                       class="bg-blue-500 hover:bg-blue-600 text-white text-xs font-medium px-2 py-1 rounded">
                                         Detalles
                                     </a>
                                     <a asp-controller="ConfiguracionComercio" asp-action="Crear" asp-route-idComercio="@c.IdComercio"
-                                       class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium px-2 py-1 rounded transition-colors"
-                                       title="Configurar">
+                                       class="bg-gray-600 hover:bg-gray-700 text-white text-xs font-medium px-2 py-1 rounded">
                                         Config
                                     </a>
                                     <a asp-controller="Usuario" asp-action="Index" asp-route-idComercio="@c.IdComercio"
-                                       class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-medium px-2 py-1 rounded transition-colors"
-                                       title="Usuarios">
+                                       class="bg-sky-600 hover:bg-sky-700 text-white text-xs font-medium px-2 py-1 rounded">
                                         Usuarios
                                     </a>
                                     <a asp-controller="Caja" asp-action="Index" asp-route-idComercio="@c.IdComercio"
-                                       class="bg-green-600 hover:bg-green-700 text-white text-xs font-medium px-2 py-1 rounded transition-colors"
-                                       title="Ver cajas">
+                                       class="bg-green-600 hover:bg-green-700 text-white text-xs font-medium px-2 py-1 rounded">
                                         Cajas
                                     </a>
                                 </div>

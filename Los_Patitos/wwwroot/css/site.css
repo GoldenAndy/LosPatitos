@@ -21,3 +21,103 @@ body {
   margin-bottom: 60px;
 }
 
+/* ACCESIBILIDAD */
+
+/* Boton */
+#btn-accesibilidad {
+    position: fixed;
+    bottom: 1.5rem;
+    left: 1.5rem;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1100;
+    background-color: #0d6efd;
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 0 8px rgba(0, 0, 0, .3);
+}
+
+    #btn-accesibilidad:hover,
+    #btn-accesibilidad:focus {
+        background-color: #0b5ed7;
+        outline: 2px solid #ffffff;
+        outline-offset: 2px;
+    }
+
+/* Panel */
+#panel-accesibilidad {
+    position: fixed;
+    bottom: 5rem;
+    left: 1.5rem;
+    width: 18rem;
+    max-width: calc(100vw - 3rem);
+    display: none;
+    z-index: 1100;
+    font-size: 0.95rem;
+    line-height: 1.25;
+}
+
+/* Alto contraste */
+body.modo-alto-contraste {
+    background-color: #000 !important;
+    color: #fff !important;
+}
+
+    body.modo-alto-contraste .card,
+    body.modo-alto-contraste .navbar,
+    body.modo-alto-contraste footer,
+    body.modo-alto-contraste main,
+    body.modo-alto-contraste .bg-white,
+    body.modo-alto-contraste .bg-gray-50 {
+        background-color: #000 !important;
+        color: #fff !important;
+        border-color: #fff !important;
+    }
+
+    body.modo-alto-contraste .btn {
+        background-color: #fff !important;
+        color: #000 !important;
+        border-color: #fff !important;
+    }
+
+    body.modo-alto-contraste a,
+    body.modo-alto-contraste .nav-link {
+        color: #ffeb3b !important;
+    }
+
+html {
+    font-size: 16px; /* base */
+}
+
+    html.font-sm {
+        font-size: 15px;
+    }
+
+    html.font-md {
+        font-size: 16px;
+    }
+
+    html.font-lg {
+        font-size: 18px;
+    }
+
+    html.font-xl {
+        font-size: 20px;
+    }
+
+/* asegurar que tablas hereden el tamaño */
+table, th, td {
+    font-size: inherit;
+}
+
+/* Foco accesible */
+:focus-visible {
+    outline: 3px solid #258cfb;
+    outline-offset: 3px;
+}
+
