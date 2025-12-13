@@ -1,5 +1,4 @@
-﻿using System.Threading.Tasks;
-using Los_Patitos.Models;
+﻿using Los_Patitos.Models;
 
 namespace Los_Patitos.Repositories
 {

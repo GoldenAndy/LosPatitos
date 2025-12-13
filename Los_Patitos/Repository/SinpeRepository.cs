@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Los_Patitos.Data;
+﻿using Los_Patitos.Data;
 using Los_Patitos.Models;
 using Microsoft.EntityFrameworkCore;
 

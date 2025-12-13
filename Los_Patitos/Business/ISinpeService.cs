@@ -1,6 +1,4 @@
-﻿using System.Threading.Tasks;
-using Los_Patitos.Models;
-using System.Collections.Generic;
+﻿using Los_Patitos.Models;
 
 namespace Los_Patitos.Business
 {

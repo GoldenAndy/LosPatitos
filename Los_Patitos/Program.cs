@@ -25,6 +25,13 @@ builder.Services.AddControllersWithViews(options =>
     options.Filters.Add(new AuthorizeFilter(policy));
 });
 
+
+var apiBase = builder.Configuration["ApiExterno:BaseUrl"];  
+var mvcBase = builder.Configuration["Mvc:BaseUrl"];         
+
+builder.Services.AddHttpClient("ApiExterno", c => c.BaseAddress = new Uri(apiBase!));
+builder.Services.AddHttpClient("SelfMvc", c => c.BaseAddress = new Uri(mvcBase!));
+
 // ---------- DB ----------
 var cs = builder.Configuration.GetConnectionString("MySqlConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>

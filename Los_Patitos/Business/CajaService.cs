@@ -1,11 +1,7 @@
-﻿using Los_Patitos.Business;
-using Los_Patitos.Data;
+﻿using Los_Patitos.Data;
 using Los_Patitos.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 
 namespace Los_Patitos.Business
 {
